@@ -1,0 +1,2151 @@
+FROM [lib://DataFiles/countryAliases.qvd]
+FROM [lib://DataFiles/countryGeo.qvd]
+ FROM [lib://DataFiles/Items.qvd]
+FROM [lib://DataFiles/InvoiceDate.qvd]
+ FROM [lib://DataFiles/GLDate.qvd]
+FROM [lib://DataFiles/OrginalDocumentDate.qvd]				
+ FROM [lib://DataFiles/Segments.qvd]
+ FROM [lib://DataFiles/AjLedger.qvd]
+ FROM [lib://DataFiles/ShipmentDate.qvd]
+FROM [lib://DataFiles/countryGeo.qvd]	
+FROM [lib://DataFiles/countryAliases.qvd]	
+FROM [lib://DataFiles/ShipTo.qvd]	
+FROM [lib://DataFiles/countryGeo.qvd]
+FROM [lib://DataFiles/countryAliases.qvd]
+ FROM [lib://DataFiles/SoldTo.qvd]
+FROM [lib://DataFiles/countryGeo.qvd]
+FROM [lib://DataFiles/countryAliases.qvd]
+ FROM [lib://DataFiles/SoldTo.qvd]
+ FROM [lib://DataFiles/Customer Service Level 2.qvw.log]
+ FROM [lib://DataFiles/Customer Service Level 1.qvw.log]
+ FROM [lib://DataFiles/case docs.qvd]
+FROM [lib://DataFiles/countryGeo.qvd]
+ FROM [lib://DataFiles/cases.qvd]
+
+
+Set dataManagerTables = '','D_ITEM';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[D_ITEM]:
+LOAD
+	[ITEMID],
+	[SHRTID],
+	[LNGID],
+	[ITEMDESCRIPTION],
+	[ITEMDESCRIPTION2],
+	[IMTMPL],
+	[STD_CST],
+	[EANCODE],
+	[COUNTRY],
+	[IMSRP0],
+	[C_SALESREPORTINGCODE00],
+	[SALESREPORTINGCODE00],
+	[IMSRP1],
+	[C_SALESREPORTINGCODE01],
+	[SALESREPORTINGCODE01],
+	[IMSRP2],
+	[C_SALESREPORTINGCODE02],
+	[SALESREPORTINGCODE02],
+	[IMSRP3],
+	[C_SALESREPORTINGCODE03],
+	[SALESREPORTINGCODE03],
+	[IMSRP4],
+	[C_SALESREPORTINGCODE04],
+	[SALESREPORTINGCODE04],
+	[IMSRP5],
+	[C_SALESREPORTINGCODE05],
+	[SALESREPORTINGCODE05],
+	[IMSRP6],
+	[C_SALESREPORTINGCODE06],
+	[SALESREPORTINGCODE06],
+	[IMSRP7],
+	[C_SALESREPORTINGCODE07],
+	[SALESREPORTINGCODE07],
+	[IMSRP8],
+	[C_SALESREPORTINGCODE08],
+	[SALESREPORTINGCODE08],
+	[IMSRP9],
+	[C_SALESREPORTINGCODE09],
+	[SALESREPORTINGCODE09],
+	[IMPRP0],
+	[C_PURCHASREPORTINGCODE00],
+	[PURCHASREPORTINGCODE00],
+	[IMPRP1],
+	[C_PURCHASREPORTINGCODE01],
+	[PURCHASREPORTINGCODE01],
+	[IMPRP2],
+	[C_PURCHASREPORTINGCODE02],
+	[PURCHASREPORTINGCODE02],
+	[IMPRP3],
+	[C_PURCHASREPORTINGCODE03],
+	[PURCHASREPORTINGCODE03],
+	[IMPRP4],
+	[C_PURCHASREPORTINGCODE04],
+	[PURCHASREPORTINGCODE04],
+	[IMPRP5],
+	[C_PURCHASREPORTINGCODE05],
+	[PURCHASREPORTINGCODE05],
+	[IMPRP6],
+	[C_PURCHASREPORTINGCODE06],
+	[PURCHASREPORTINGCODE06],
+	[IMPRP7],
+	[C_PURCHASREPORTINGCODE07],
+	[PURCHASREPORTINGCODE07],
+	[IMPRP8],
+	[C_PURCHASREPORTINGCODE08],
+	[PURCHASREPORTINGCODE08],
+	[IMPRP9],
+	[C_PURCHASREPORTINGCODE09],
+	[PURCHASREPORTINGCODE09],
+	[ITEMSEGMENT01],
+	[ITEMSEGMENT02],
+	[ITEMSEGMENT03],
+	[ITEMSEGMENT04],
+	[ITEMSEGMENT05],
+	[ITEMSEGMENT06],
+	[ITEMSEGMENT07],
+	[STOCKINGTYPE],
+	[IMUOM1],
+	[IMUOM2],
+	[IMUOM3],
+	[IMUOM4],
+	[IMUOM6],
+	[IMUOM8],
+	[IMUOM9],
+	[IMUWUM],
+	[IMUVM1],
+	[VALIDFROM],
+	Timestamp([VALIDTO] ) AS [VALIDTO],
+	[ISCURRENT],
+	[ISHISTORY],
+	[IMGLPT],
+	[VOLUME],
+	[KR_SZ],
+	[PL_SZ],
+	[SZ_LT],
+	[C01_CODE],
+	[C01_CODE_DESC],
+	[C02_CODE],
+	[C02_CODE_DESC],
+	[C03_CODE],
+	[C03_CODE_DESC],
+	[C04_CODE],
+	[C04_CODE_DESC],
+	[C05_CODE],
+	[C05_CODE_DESC],
+	[C06_CODE],
+	[C06_CODE_DESC],
+	[C07_CODE],
+	[C07_CODE_DESC],
+	[C08_CODE],
+	[C08_CODE_DESC],
+	[C09_CODE],
+	[C09_CODE_DESC],
+	[C10_CODE],
+	[C10_CODE_DESC],
+	[CN],
+	[CN_CODE],
+	[SHIP_CODE],
+	[SHIP_CODE_DESC1],
+	[SHIP_CODE_DESC2],
+	[SZ_GR],
+	[WEIGHT_OF_KR],
+	[COUNTRY_DESC],
+	[SZ_GT],
+	[PC_BRAND_QUALITY_CODE],
+	[PC_BRAND_QUALITY_CODE_DESC],
+	[PC_BRAND_CODE],
+	[PC_BRAND_CODE_DESC],
+	[PC_BRAND_QUALITY_SIZE_CODE],
+	[PC_BRAND_QUALITY_SIZE_DESC],
+	[ANAPLAN_SKU],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([COUNTRY]), '-') AS [D_ITEM.COUNTRY_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([ITEMSEGMENT05])), '-') AS [D_ITEM.ITEMSEGMENT05_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([IMUWUM]), '-') AS [D_ITEM.IMUWUM_GeoInfo]
+ FROM [lib://DataFiles/D_ITEM.qvd]
+(qvd);
+
+
+
+TAG FIELD [COUNTRY] WITH '$geoname', '$relates_D_ITEM.COUNTRY_GeoInfo';
+TAG FIELD [D_ITEM.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY';
+TAG FIELD [ITEMSEGMENT05] WITH '$geoname', '$relates_D_ITEM.ITEMSEGMENT05_GeoInfo';
+TAG FIELD [D_ITEM.ITEMSEGMENT05_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_ITEMSEGMENT05';
+TAG FIELD [IMUWUM] WITH '$geoname', '$relates_D_ITEM.IMUWUM_GeoInfo';
+TAG FIELD [D_ITEM.IMUWUM_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_IMUWUM';
+
+DROP TABLES __countryGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [VALIDFROM], [VALIDTO] USING [autoCalendar] ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Set dataManagerTables = '','D_SALES_ITM';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[D_SALES_ITM]:
+LOAD
+	[ITEM_ID],
+	[SHRTID],
+	[LNGITEMID],
+	[SEGMENT1],
+	[SEGMENT2],
+	[SEGMENT3],
+	[SEGMENT4],
+	[SEGMENT5],
+	[SEGMENT6],
+	[SEGMENT7],
+	[CATEGORY1],
+	[CATEGORY2],
+	[CATEGORY3],
+	[CATEGORY4],
+	[CATEGORY5],
+	[CATEGORY6],
+	[CATEGORY7],
+	[CATEGORY8],
+	[CATEGORY9],
+	[CATEGORY10],
+	[CATEGORY12],
+	Date([CATEGORY13] ) AS [CATEGORY13],
+	[CATEGORY14],
+	[CATEGORY15],
+	[CATEGORY16],
+	[CATEGORY17],
+	[CATEGORY18],
+	[CATEGORY19],
+	[CATEGORY20],
+	[CATEGORY21],
+	[LOADDATE],
+	[ISHISTORY],
+	[ITEMDESCRIPTION],
+	[ITEMDESCRIPTION2],
+	[IMPRP3],
+	[C_PURCHASREPORTINGCODE02],
+	[ISCURRENT],
+	[CATEGORY22],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([SEGMENT5])), '-') AS [D_SALES_ITM.SEGMENT5_GeoInfo]
+ FROM [lib://DataFiles/D_SALES_ITM.qvd]
+(qvd);
+
+
+
+TAG FIELD [SEGMENT5] WITH '$geoname', '$relates_D_SALES_ITM.SEGMENT5_GeoInfo';
+TAG FIELD [D_SALES_ITM.SEGMENT5_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_SEGMENT5';
+
+DROP TABLES __countryAliasesBase, __countryGeoBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [CATEGORY13] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','D_SOLD_TO';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__cityAliasesBase:
+LOAD
+	Alias AS [__City],
+	geoKey AS [__geoKey],
+	CountryCode AS [__CityCountryCode]
+FROM [lib://DataFiles/cityAliases.qvd]
+(qvd);
+
+__cityGeoBase:
+LOAD
+	geoKey AS [__geoKey],
+	geoPoint AS [__GeoPoint]
+FROM [lib://DataFiles/cityGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryCodeAndCityName2Key:
+MAPPING LOAD
+	__CityCountryCode & __City,
+	__geoKey
+RESIDENT __cityAliasesBase;
+
+__cityKey2GeoPoint:
+MAPPING LOAD
+	__geoKey,
+	__GeoPoint
+RESIDENT __cityGeoBase;
+
+__countryCodeIsoTwo2IsoThree:
+MAPPING LOAD
+	__ISO2Code,
+	__ISO3Code
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[D_SOLD_TO]:
+LOAD
+	[SOLDTOID],
+	[ADDRESSNUMBER],
+	[C_NAMEALPHA],
+	[NAMEALPHA],
+	[C_MAILINGNAME],
+	[MAILINGNAME],
+	[C_ADDRESSLINE1],
+	[ADDRESSLINE1],
+	[C_ADDRESSLINE2],
+	[ADDRESSLINE2],
+	[C_ADDRESSLINE3],
+	[ADDRESSLINE3],
+	[C_ADDRESSLINE4],
+	[ADDRESSLINE4],
+	[C_CITY],
+	[CITY],
+	[C_STATE],
+	[STATE],
+	[C_COUNTRY],
+	[COUNTRY],
+	[C_POSTALCODE],
+	[POSTALCODE],
+	[TAXID],
+	[ABAC01],
+	[C_CATEGORYCODE01],
+	[CATEGORYCODE01],
+	[ABAC02],
+	[C_CATEGORYCODE02],
+	[CATEGORYCODE02],
+	[ABAC03],
+	[C_CATEGORYCODE03],
+	[CATEGORYCODE03],
+	[ABAC04],
+	[C_CATEGORYCODE04],
+	[CATEGORYCODE04],
+	[ABAC05],
+	[C_CATEGORYCODE05],
+	[CATEGORYCODE05],
+	[ABAC06],
+	[C_CATEGORYCODE06],
+	[CATEGORYCODE06],
+	[ABAC07],
+	[C_CATEGORYCODE07],
+	[CATEGORYCODE07],
+	[ABAC08],
+	[C_CATEGORYCODE08],
+	[CATEGORYCODE08],
+	[ABAC09],
+	[C_CATEGORYCODE09],
+	[CATEGORYCODE09],
+	[ABAC10],
+	[C_CATEGORYCODE10],
+	[CATEGORYCODE10],
+	[ABAC11],
+	[C_CATEGORYCODE11],
+	[CATEGORYCODE11],
+	[ABAC12],
+	[C_CATEGORYCODE12],
+	[CATEGORYCODE12],
+	[ABAC13],
+	[C_CATEGORYCODE13],
+	[CATEGORYCODE13],
+	[ABAC14],
+	[C_CATEGORYCODE14],
+	[CATEGORYCODE14],
+	[ABAC15],
+	[C_CATEGORYCODE15],
+	[CATEGORYCODE15],
+	[ABAC16],
+	[C_CATEGORYCODE16],
+	[CATEGORYCODE16],
+	[ABAC17],
+	[C_CATEGORYCODE17],
+	[CATEGORYCODE17],
+	[ABAC18],
+	[C_CATEGORYCODE18],
+	[CATEGORYCODE18],
+	[ABAC19],
+	[C_CATEGORYCODE19],
+	[CATEGORYCODE19],
+	[ABAC20],
+	[C_CATEGORYCODE20],
+	[CATEGORYCODE20],
+	[ABAC21],
+	[C_CATEGORYCODE21],
+	[CATEGORYCODE21],
+	[ABAC22],
+	[C_CATEGORYCODE22],
+	[CATEGORYCODE22],
+	[ABAC23],
+	[C_CATEGORYCODE23],
+	[CATEGORYCODE23],
+	[ABAC24],
+	[C_CATEGORYCODE24],
+	[CATEGORYCODE24],
+	[ABAC25],
+	[C_CATEGORYCODE25],
+	[CATEGORYCODE25],
+	[ABAC26],
+	[C_CATEGORYCODE26],
+	[CATEGORYCODE26],
+	[ABAC27],
+	[C_CATEGORYCODE27],
+	[CATEGORYCODE27],
+	[ABAC28],
+	[C_CATEGORYCODE28],
+	[CATEGORYCODE28],
+	[ABAC29],
+	[C_CATEGORYCODE29],
+	[CATEGORYCODE29],
+	[ABAC30],
+	[C_CATEGORYCODE30],
+	[CATEGORYCODE30],
+	[VALIDFROM],
+	Timestamp([VALIDTO] ) AS [VALIDTO],
+	[ISCURRENT],
+	[ISHISTORY],
+	[MINO],
+	[C_COUNTRY_DESC],
+	[COUNTRY_DESC],
+	[ABSIC],
+	[S_TYPE],
+	[CLASSIFICATIONCODE02],
+	[ASN],
+	[CLASSIFICATIONCODE04],
+	[TRAR],
+	[CUSTOMERGROUP],
+	[CUSTOMERGROUPDESC],
+	[PAYER],
+	[ABATPR],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([C_COUNTRY]), '-') AS [D_SOLD_TO.C_COUNTRY_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([COUNTRY]), '-') AS [D_SOLD_TO.COUNTRY_GeoInfo],
+	APPLYMAP( '__cityKey2GeoPoint', APPLYMAP( '__countryCodeAndCityName2Key', APPLYMAP( '__countryCodeIsoTwo2IsoThree', UPPER([ABAC22])) & LOWER([ABAC09])), '-') AS [D_SOLD_TO.ABAC09_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([ABAC22]), '-') AS [D_SOLD_TO.ABAC22_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([C_COUNTRY_DESC])), '-') AS [D_SOLD_TO.C_COUNTRY_DESC_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([COUNTRY_DESC])), '-') AS [D_SOLD_TO.COUNTRY_DESC_GeoInfo]
+ FROM [lib://DataFiles/D_SOLD_TO.qvd]
+(qvd);
+
+
+
+TAG FIELD [C_COUNTRY] WITH '$geoname', '$relates_D_SOLD_TO.C_COUNTRY_GeoInfo';
+TAG FIELD [D_SOLD_TO.C_COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_C_COUNTRY';
+TAG FIELD [COUNTRY] WITH '$geoname', '$relates_D_SOLD_TO.COUNTRY_GeoInfo';
+TAG FIELD [D_SOLD_TO.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY';
+TAG FIELD [ABAC09] WITH '$geoname', '$relates_D_SOLD_TO.ABAC09_GeoInfo';
+TAG FIELD [D_SOLD_TO.ABAC09_GeoInfo] WITH '$geopoint', '$hidden', '$relates_ABAC09';
+TAG FIELD [ABAC22] WITH '$geoname', '$relates_D_SOLD_TO.ABAC22_GeoInfo';
+TAG FIELD [D_SOLD_TO.ABAC22_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_ABAC22';
+TAG FIELD [C_COUNTRY_DESC] WITH '$geoname', '$relates_D_SOLD_TO.C_COUNTRY_DESC_GeoInfo';
+TAG FIELD [D_SOLD_TO.C_COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_C_COUNTRY_DESC';
+TAG FIELD [COUNTRY_DESC] WITH '$geoname', '$relates_D_SOLD_TO.COUNTRY_DESC_GeoInfo';
+TAG FIELD [D_SOLD_TO.COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY_DESC';
+
+DROP TABLES __countryGeoBase, __cityAliasesBase, __cityGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [VALIDFROM], [VALIDTO] USING [autoCalendar] ;
+
+
+
+Set dataManagerTables = '','D_SOLD_TO_MAP_CS_CATEGORY';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_SOLD_TO_MAP_CS_CATEGORY]:
+LOAD
+	[ABAN8],
+	[ABCLASS03]
+ FROM [lib://DataFiles/D_SOLD_TO_MAP_CS_CATEGORY.qvd]
+(qvd);
+
+
+
+Set dataManagerTables = '','faktury';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[faktury]:
+LOAD
+	[RPKCO],
+	[RPDCT],
+	[RPDOC],
+	[RPSFX],
+	[RPAN8],
+	[RPAN84],
+	[RPSHAN],
+	[RPDGJ],
+	[RPDGJ_2],
+	[RPDIVJ],
+	Timestamp([RPDSVJ] ) AS [RPDSVJ],
+	Timestamp([RPDDJ] ) AS [RPDDJ],
+	[RPVDGJ],
+	[RPICUT],
+	[RPICU],
+	[RPAG],
+	[RPATXA],
+	[RPSTAM],
+	[RPCRCD],
+	[RPACR],
+	[RPPOST],
+	[RPNETTCID],
+	[RPGLC],
+	[RPRCTYPE],
+	[COMMENTS],
+	[RPPST],
+	[RPAN8_NK],
+	[RPJCL],
+	[RPAJCL],
+	[RPAN8_1],
+	[TAXID],
+	[COUNTRY],
+	[COUNTRY_DESC],
+	Timestamp([RZDMTJ] ) AS [RZDMTJ],
+	[PAYMENT_AMOUNT],
+	[PAYMENT_TERMS],
+	[RPSDCT],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([COUNTRY]), '-') AS [faktury.COUNTRY_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([COUNTRY_DESC])), '-') AS [faktury.COUNTRY_DESC_GeoInfo]
+ FROM [lib://DataFiles/faktury.qvd]
+(qvd);
+
+
+
+TAG FIELD [COUNTRY] WITH '$geoname', '$relates_faktury.COUNTRY_GeoInfo';
+TAG FIELD [faktury.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY';
+TAG FIELD [COUNTRY_DESC] WITH '$geoname', '$relates_faktury.COUNTRY_DESC_GeoInfo';
+TAG FIELD [faktury.COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY_DESC';
+
+DROP TABLES __countryGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [RPDGJ], [RPDGJ_2], [RPDIVJ], [RPDSVJ], [RPDDJ], [RPVDGJ], [RPJCL], [RZDMTJ] USING [autoCalendar] ;
+Set dataManagerTables = '','korekty';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[korekty]:
+LOAD
+	[SDKCOO],
+	[SDDOCO],
+	[SDDCTO],
+	[SDLNID],
+	[SDAN8],
+	[SDSHAN],
+	[SDITM],
+	[SDKCO],
+	[SDDOC],
+	[SDDCT],
+	[SDODOC],
+	[SDODCT],
+	[SDOKC],
+	[SDDGL],
+	[SDIVD],
+	[SDADDJ],
+	Timestamp([LDAPV] ) AS [LDAPV],
+	[RPDIVJ],
+	[INV_DATE_ORG],
+	[SDTAX1],
+	[SDRCD],
+	[SDRCD_DESC],
+	[SDTORG],
+	[SDMCU],
+	[MCU_DESC],
+	[SDAEXP],
+	[TAXRATE],
+	[GROSS_AMNT],
+	[SDPQOR],
+	[SDECST],
+	[SDURCD],
+	[SDVR01]
+ FROM [lib://DataFiles/korekty.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [SDDGL], [SDIVD], [SDADDJ], [LDAPV], [RPDIVJ], [INV_DATE_ORG] USING [autoCalendar] ;
+
+
+
+Set dataManagerTables = '','korekty';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[korekty]:
+LOAD
+	[SDKCOO],
+	[SDDOCO],
+	[SDDCTO],
+	[SDLNID],
+	[SDAN8],
+	[SDSHAN],
+	[SDITM],
+	[SDKCO],
+	[SDDOC],
+	[SDDCT],
+	[SDODOC],
+	[SDODCT],
+	[SDOKC],
+	[SDDGL],
+	[SDIVD],
+	[SDADDJ],
+	Timestamp([LDAPV] ) AS [LDAPV],
+	[RPDIVJ],
+	[INV_DATE_ORG],
+	[SDTAX1],
+	[SDRCD],
+	[SDRCD_DESC],
+	[SDTORG],
+	[SDMCU],
+	[MCU_DESC],
+	[SDAEXP],
+	[TAXRATE],
+	[GROSS_AMNT],
+	[SDPQOR],
+	[SDECST],
+	[SDURCD],
+	[SDVR01]
+ FROM [lib://DataFiles/korekty.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [SDDGL], [SDIVD], [SDADDJ], [LDAPV], [RPDIVJ], [INV_DATE_ORG] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','cases';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[cases]:
+LOAD
+	[__CaseID],
+	[__ShipToID],
+	[__PayerID],
+	[__ItemID],
+	[__OrderCompanyID],
+	[__OrderDocTypeID],
+	[__OrderDocNoID],
+	[__OrderLineID],
+	[__InvoiceCompanyID],
+	[__InvoiceDocNoID],
+	[__InvoiceDocTypeID],
+	[CASE.OrderDocTypeID_copy],
+	[CASE.OrderDocNoID_copy],
+	[CASE.Corr Order Company ID],
+	[CASE.Corr Order Doc Type],
+	[CASE.Corr Order Doc No],
+	[CASE.Case Code1],
+	[CASE.Case Code2],
+	[CASE.Case Explanation],
+	[CASE.User ID],
+	[CASE.Status Code],
+	[CASE.Status Description],
+	Date([CASE.Deposit Date] ) AS [CASE.Deposit Date],
+	[CASE.Begin Date],
+	[CASE.End Date],
+	[CASE.Shippment Date],
+	[#CASE.Corrected Amount],
+	[#CASE.Corrected Value],
+	[#CASE.Corrected Litres],
+	[CASE.OrderKeyCount],
+	[CASE.InvoiceKeyCount]
+ FROM [lib://DataFiles/cases.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [CASE.Deposit Date], [CASE.Begin Date], [CASE.End Date], [CASE.Shippment Date] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','Clerks';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[Clerks]:
+LOAD
+	[__MonthYear],
+	[Local_Export],
+	[#NoOfClerks]
+ FROM [lib://DataFiles/Clerks.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [__MonthYear] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','Customers';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__cityAliasesBase:
+LOAD
+	Alias AS [__City],
+	geoKey AS [__geoKey],
+	CountryCode AS [__CityCountryCode]
+FROM [lib://DataFiles/cityAliases.qvd]
+(qvd);
+
+__cityGeoBase:
+LOAD
+	geoKey AS [__geoKey],
+	geoPoint AS [__GeoPoint]
+FROM [lib://DataFiles/cityGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryCodeAndCityName2Key:
+MAPPING LOAD
+	__CityCountryCode & __City,
+	__geoKey
+RESIDENT __cityAliasesBase;
+
+__cityKey2GeoPoint:
+MAPPING LOAD
+	__geoKey,
+	__GeoPoint
+RESIDENT __cityGeoBase;
+
+__countryCodeIsoTwo2IsoThree:
+MAPPING LOAD
+	__ISO2Code,
+	__ISO3Code
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[Customers]:
+LOAD
+	[__PayerID],
+	[__BgtSoldToID],
+	[__ShipToID],
+	[D_SOLD_TO.UE],
+	[D_SOLD_TO.AB_CAT1],
+	[D_SOLD_TO.SOLDTOID],
+	[Address Number],
+	[Name Of Customer],
+	[D_SOLD_TO.NAMEALPHA],
+	[Mailing Name],
+	[D_SOLD_TO.MAILINGNAME],
+	[Street],
+	[D_SOLD_TO.ADDRESSLINE1],
+	[Street (Continued)],
+	[D_SOLD_TO.ADDRESSLINE2],
+	[D_SOLD_TO.C_ADDRESSLINE3],
+	[D_SOLD_TO.ADDRESSLINE3],
+	[D_SOLD_TO.C_ADDRESSLINE4],
+	[D_SOLD_TO.ADDRESSLINE4],
+	[City],
+	[D_SOLD_TO.CITY],
+	[State],
+	[D_SOLD_TO.STATE],
+	[Country Code],
+	[D_SOLD_TO.COUNTRY],
+	[Postal Code],
+	[D_SOLD_TO.POSTALCODE],
+	[Tax Number ID],
+	[D_SOLD_TO.ABAC01],
+	[D_SOLD_TO.C_CATEGORYCODE01],
+	[D_SOLD_TO.CATEGORYCODE01],
+	[D_SOLD_TO.ABAC02],
+	[AB Cat. Code 2],
+	[D_SOLD_TO.CATEGORYCODE02],
+	"Customer Category [ABAC03]",
+	[Customer Category],
+	[D_SOLD_TO.CATEGORYCODE03],
+	[D_SOLD_TO.ABAC04],
+	[D_SOLD_TO.C_CATEGORYCODE04],
+	[D_SOLD_TO.CATEGORYCODE04],
+	[D_SOLD_TO.ABAC05],
+	[AB Cat. Code 5],
+	[D_SOLD_TO.CATEGORYCODE05],
+	"Direction [ABAC06]",
+	[Market Code],
+	[D_SOLD_TO.CATEGORYCODE06],
+	[D_SOLD_TO.ABAC07],
+	[D_SOLD_TO.C_CATEGORYCODE07],
+	[D_SOLD_TO.CATEGORYCODE07],
+	[D_SOLD_TO.ABAC08],
+	[Group/Non Group],
+	[D_SOLD_TO.CATEGORYCODE08],
+	[D_SOLD_TO.ABAC09],
+	[Customer Type],
+	[D_SOLD_TO.CATEGORYCODE09],
+	[D_SOLD_TO.ABAC10],
+	[Domestic/Export],
+	[D_SOLD_TO.CATEGORYCODE10],
+	[D_SOLD_TO.ABAC11],
+	[D_SOLD_TO.C_CATEGORYCODE11],
+	[D_SOLD_TO.CATEGORYCODE11],
+	[D_SOLD_TO.ABAC12],
+	[Sales Region],
+	[D_SOLD_TO.CATEGORYCODE12],
+	[D_SOLD_TO.ABAC13],
+	[D_SOLD_TO.C_CATEGORYCODE13],
+	[D_SOLD_TO.CATEGORYCODE13],
+	[D_SOLD_TO.ABAC14],
+	[D_SOLD_TO.C_CATEGORYCODE14],
+	[D_SOLD_TO.CATEGORYCODE14],
+	[D_SOLD_TO.ABAC15],
+	[D_SOLD_TO.C_CATEGORYCODE15],
+	[D_SOLD_TO.CATEGORYCODE15],
+	[D_SOLD_TO.ABAC16],
+	[Domestic/Travel Retail],
+	[D_SOLD_TO.CATEGORYCODE16],
+	[D_SOLD_TO.ABAC17],
+	[Customer Group],
+	[D_SOLD_TO.CATEGORYCODE17],
+	[D_SOLD_TO.ABAC18],
+	[Customer group PNL],
+	[D_SOLD_TO.CATEGORYCODE18],
+	[D_SOLD_TO.ABAC19],
+	[Key Account Manager],
+	[D_SOLD_TO.CATEGORYCODE19],
+	[D_SOLD_TO.ABAC20],
+	[D_SOLD_TO.C_CATEGORYCODE20],
+	[D_SOLD_TO.CATEGORYCODE20],
+	[D_SOLD_TO.ABAC21],
+	[D_SOLD_TO.C_CATEGORYCODE21],
+	[D_SOLD_TO.CATEGORYCODE21],
+	[D_SOLD_TO.ABAC22],
+	[D_SOLD_TO.C_CATEGORYCODE22],
+	[D_SOLD_TO.CATEGORYCODE22],
+	[D_SOLD_TO.ABAC23],
+	[D_SOLD_TO.C_CATEGORYCODE23],
+	[D_SOLD_TO.CATEGORYCODE23],
+	[D_SOLD_TO.ABAC24],
+	[Markets],
+	[D_SOLD_TO.CATEGORYCODE24],
+	[D_SOLD_TO.ABAC25],
+	[ICP],
+	[D_SOLD_TO.CATEGORYCODE25],
+	[D_SOLD_TO.ABAC26],
+	[Distribution Channel],
+	[D_SOLD_TO.CATEGORYCODE26],
+	[D_SOLD_TO.ABAC27],
+	[V_Market],
+	[D_SOLD_TO.CATEGORYCODE27],
+	[D_SOLD_TO.ABAC28],
+	[V_ICP],
+	[D_SOLD_TO.CATEGORYCODE28],
+	[Concession Type],
+	[Concession Type Desc.],
+	[D_SOLD_TO.CATEGORYCODE29],
+	[D_SOLD_TO.ABAC30],
+	[D_SOLD_TO.C_CATEGORYCODE30],
+	[D_SOLD_TO.CATEGORYCODE30],
+	[D_SOLD_TO.VALIDFROM],
+	Timestamp([D_SOLD_TO.VALIDTO] ) AS [D_SOLD_TO.VALIDTO],
+	[D_SOLD_TO.ISCURRENT],
+	[D_SOLD_TO.ISHISTORY],
+	[Minimal Value Order],
+	[Country Desc],
+	[D_SOLD_TO.COUNTRY_DESC],
+	[D_SOLD_TO.ABSIC],
+	[Search Type],
+	[D_SOLD_TO.CLASSIFICATIONCODE02],
+	[D_SOLD_TO.ASN],
+	[D_SOLD_TO.CLASSIFICATIONCODE04],
+	[Payment Terms - A/R],
+	[D_SOLD_TO.CUSTOMERGROUP],
+	[D_SOLD_TO.CUSTOMERGROUPDESC],
+	[D_SOLD_TO.PAYER],
+	[D_SOLD_TO.ABATPR],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([Country Code]), '-') AS [Customers.Country Code_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([D_SOLD_TO.COUNTRY]), '-') AS [Customers.D_SOLD_TO.COUNTRY_GeoInfo],
+	APPLYMAP( '__cityKey2GeoPoint', APPLYMAP( '__countryCodeAndCityName2Key', APPLYMAP( '__countryCodeIsoTwo2IsoThree', UPPER([D_SOLD_TO.ABAC22])) & LOWER([D_SOLD_TO.ABAC09])), '-') AS [Customers.D_SOLD_TO.ABAC09_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([D_SOLD_TO.ABAC22]), '-') AS [Customers.D_SOLD_TO.ABAC22_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([Country Desc])), '-') AS [Customers.Country Desc_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([D_SOLD_TO.COUNTRY_DESC])), '-') AS [Customers.D_SOLD_TO.COUNTRY_DESC_GeoInfo]
+ FROM [lib://DataFiles/Customers.qvd]
+(qvd);
+
+
+
+TAG FIELD [Country Code] WITH '$geoname', '$relates_Customers.Country Code_GeoInfo';
+TAG FIELD [Customers.Country Code_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_Country Code';
+TAG FIELD [D_SOLD_TO.COUNTRY] WITH '$geoname', '$relates_Customers.D_SOLD_TO.COUNTRY_GeoInfo';
+TAG FIELD [Customers.D_SOLD_TO.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_D_SOLD_TO.COUNTRY';
+TAG FIELD [D_SOLD_TO.ABAC09] WITH '$geoname', '$relates_Customers.D_SOLD_TO.ABAC09_GeoInfo';
+TAG FIELD [Customers.D_SOLD_TO.ABAC09_GeoInfo] WITH '$geopoint', '$hidden', '$relates_D_SOLD_TO.ABAC09';
+TAG FIELD [D_SOLD_TO.ABAC22] WITH '$geoname', '$relates_Customers.D_SOLD_TO.ABAC22_GeoInfo';
+TAG FIELD [Customers.D_SOLD_TO.ABAC22_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_D_SOLD_TO.ABAC22';
+TAG FIELD [Country Desc] WITH '$geoname', '$relates_Customers.Country Desc_GeoInfo';
+TAG FIELD [Customers.Country Desc_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_Country Desc';
+TAG FIELD [D_SOLD_TO.COUNTRY_DESC] WITH '$geoname', '$relates_Customers.D_SOLD_TO.COUNTRY_DESC_GeoInfo';
+TAG FIELD [Customers.D_SOLD_TO.COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_D_SOLD_TO.COUNTRY_DESC';
+
+DROP TABLES __countryGeoBase, __cityAliasesBase, __cityGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [D_SOLD_TO.VALIDFROM], [D_SOLD_TO.VALIDTO] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','Delays';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[Delays]:
+LOAD
+	[F1],
+	Date(Date#([Data dostawy], 'DD-MM-YYYY') ) AS [Data dostawy],
+	[Ilość zleceń SO,SA przekazanych do kompletacji ZG],
+	[Ilość zaplanowanych dostaw Raben],
+	[Ilość dostaw zrealizowanych terminowo Raben],
+	[KPI terminowych dostaw Raben],
+	[target],
+	[F8],
+	Date(Date#([Data dostawy1], 'DD-MM-YYYY') ) AS [Data dostawy1],
+	[Numer przesyłki RABEN],
+	[Numer zlecenia JDE],
+	[Klient],
+	[Adres],
+	[Kod pocztowy],
+	[Rzeczywista data dostawy],
+	[Kod],
+	[Przyczyna opóźnienia],
+	[Odpowiedzialny],
+	[Odpowiedzialność ZG],
+	[Odpowiedzialność Raben],
+	[ILOŚĆ ZLECEŃ],
+	[MIESIĄC],
+	Date([Rzeczywista wysyłka JDE] ) AS [Rzeczywista wysyłka JDE],
+	[uwagi],
+	[F25],
+	[F26],
+	[F27],
+	[F28],
+	[F29],
+	[F30],
+	[F31],
+	[F32],
+	[F33],
+	[F34],
+	[F35],
+	[F36],
+	[F37],
+	[F38],
+	[F39],
+	[F40],
+	[F41],
+	[F42],
+	[F43],
+	[F44],
+	[F45],
+	[F46],
+	[F47],
+	[F48],
+	[F49],
+	[F50],
+	[F51],
+	[F52],
+	[F53],
+	[F54],
+	[F55],
+	[F56],
+	[F57],
+	[F58],
+	[F59],
+	[F60],
+	[F61],
+	[F62],
+	[F63],
+	[F64],
+	[F65],
+	[F66],
+	[F67],
+	[F68],
+	[F69],
+	[F70],
+	[F71],
+	[F72],
+	[F73],
+	[F74],
+	[F75],
+	[F76],
+	[F77],
+	[F78],
+	[F79],
+	[F80],
+	[F81],
+	[F82],
+	[F83],
+	[F84],
+	[F85],
+	[F86],
+	[F87],
+	[F88],
+	[F89],
+	[F90],
+	[F91],
+	[F92],
+	[F93],
+	[F94],
+	[F95],
+	[F96],
+	[F97],
+	[F98],
+	[F99],
+	[F100],
+	[F101],
+	[F102],
+	[F103],
+	[F104],
+	[F105],
+	[F106],
+	[F107],
+	[F108],
+	[F109],
+	[F110],
+	[F111],
+	[F112],
+	[F113],
+	[F114],
+	[F115],
+	[F116],
+	[F117],
+	[F118],
+	[F119],
+	[F120],
+	[F121],
+	[F122],
+	[F123],
+	[F124],
+	[F125],
+	[F126],
+	[F127],
+	[F128],
+	[F129],
+	[F130],
+	[F131],
+	[F132],
+	[F133],
+	[F134],
+	[F135],
+	[F136],
+	[F137],
+	[F138],
+	[F139],
+	[F140],
+	[F141],
+	[F142],
+	[F143],
+	[F144],
+	[F145],
+	[F146],
+	[F147],
+	[F148],
+	[F149],
+	[F150],
+	[F151],
+	[F152],
+	[F153],
+	[F154],
+	[F155],
+	[F156],
+	[F157],
+	[F158],
+	[F159],
+	[F160],
+	[F161],
+	[F162],
+	[F163],
+	[F164],
+	[F165],
+	[F166],
+	[F167],
+	[F168],
+	[F169],
+	[F170],
+	[F171],
+	[F172],
+	[F173],
+	[F174],
+	[F175],
+	[F176],
+	[F177],
+	[F178],
+	[F179],
+	[F180],
+	[F181],
+	[F182],
+	[F183],
+	[F184],
+	[F185],
+	[F186],
+	[F187],
+	[F188],
+	[F189],
+	[F190],
+	[F191],
+	[F192],
+	[F193],
+	[F194],
+	[F195],
+	[F196],
+	[F197],
+	[F198],
+	[F199],
+	[F200],
+	[F201],
+	[F202],
+	[F203],
+	[F204],
+	[F205],
+	[F206],
+	[F207],
+	[F208],
+	[F209],
+	[F210],
+	[F211],
+	[F212],
+	[F213],
+	[F214],
+	[F215],
+	[F216],
+	[F217],
+	[F218],
+	[F219],
+	[F220],
+	[F221],
+	[F222],
+	[F223],
+	[F224],
+	[F225],
+	[F226],
+	[F227],
+	[F228],
+	[F229],
+	[F230],
+	[F231],
+	[F232],
+	[F233],
+	[F234],
+	[F235],
+	[F236],
+	[F237],
+	[F238],
+	[F239],
+	[F240],
+	[F241],
+	[F242],
+	[F243],
+	[F244],
+	[F245],
+	[F246],
+	[F247],
+	[F248],
+	[F249],
+	[F250]
+ FROM [lib://DataFiles/Delays.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [Data dostawy], [Data dostawy1], [Rzeczywista wysyłka JDE] USING [autoCalendar] ;
+
+
+
+Set dataManagerTables = '','ExportServiceLevel';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[ExportServiceLevel]:
+LOAD
+	[Ordering Client],
+	[Client Address],
+	[Order Document type],
+	[Customer Service Speciaist],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([Order Document type]), '-') AS [ExportServiceLevel.Order Document type_GeoInfo]
+ FROM [lib://DataFiles/ExportServiceLevel.qvd]
+(qvd);
+
+
+
+TAG FIELD [Order Document type] WITH '$geoname', '$relates_ExportServiceLevel.Order Document type_GeoInfo';
+TAG FIELD [ExportServiceLevel.Order Document type_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_Order Document type';
+
+DROP TABLES __countryGeoBase;
+Set dataManagerTables = '','Items';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[Items]:
+LOAD
+	[__ItemID],
+	[__BgtItemID],
+	[D_ITEM.ITEMID],
+	[Short Item ID],
+	[Long Item ID],
+	[Item Description],
+	[Item Description Continued],
+	[Item Template],
+	[Standard Cost],
+	[EAN Code],
+	[Country Item],
+	[D_ITEM.IMSRP0],
+	[GUS Code],
+	[D_ITEM.SALESREPORTINGCODE00],
+	[D_ITEM.IMSRP1],
+	[Family Code],
+	[D_ITEM.SALESREPORTINGCODE01],
+	[D_ITEM.IMSRP2],
+	[Category Code],
+	[D_ITEM.SALESREPORTINGCODE02],
+	[D_ITEM.IMSRP3],
+	[Sub Category Code],
+	[D_ITEM.SALESREPORTINGCODE03],
+	[D_ITEM.IMSRP4],
+	[Controlling Brand Code],
+	[D_ITEM.SALESREPORTINGCODE04],
+	[D_ITEM.IMSRP5],
+	[Capacity],
+	[D_ITEM.SALESREPORTINGCODE05],
+	[Domestic/Imported Code],
+	[Domestic/Imported Description],
+	[D_ITEM.SALESREPORTINGCODE06],
+	[D_ITEM.IMSRP7],
+	[Brand Owner],
+	[D_ITEM.SALESREPORTINGCODE07],
+	[D_ITEM.IMSRP8],
+	[Promotion/Standard Sales],
+	[D_ITEM.SALESREPORTINGCODE08],
+	[Proof (SRP9)],
+	[Proof],
+	[D_ITEM.SALESREPORTINGCODE09],
+	[D_ITEM.IMPRP0],
+	[D_ITEM.C_PURCHASREPORTINGCODE00],
+	[D_ITEM.PURCHASREPORTINGCODE00],
+	[PRP1],
+	[Extended Description],
+	[D_ITEM.PURCHASREPORTINGCODE01],
+	[D_ITEM.IMPRP2],
+	[Sales Brand],
+	[D_ITEM.PURCHASREPORTINGCODE02],
+	[Brand (IMPRP3)],
+	[Brand],
+	[D_ITEM.PURCHASREPORTINGCODE03],
+	[D_ITEM.IMPRP4],
+	[Marketing Brand Code],
+	[D_ITEM.PURCHASREPORTINGCODE04],
+	[D_ITEM.IMPRP5],
+	[D_ITEM.C_PURCHASREPORTINGCODE05],
+	[D_ITEM.PURCHASREPORTINGCODE05],
+	[D_ITEM.IMPRP6],
+	[Bottles In Case],
+	[D_ITEM.PURCHASREPORTINGCODE06],
+	[D_ITEM.IMPRP7],
+	[Type Of Packing],
+	[D_ITEM.PURCHASREPORTINGCODE07],
+	[D_ITEM.IMPRP8],
+	[D_ITEM.C_PURCHASREPORTINGCODE08],
+	[D_ITEM.PURCHASREPORTINGCODE08],
+	[D_ITEM.IMPRP9],
+	[D_ITEM.C_PURCHASREPORTINGCODE09],
+	[D_ITEM.PURCHASREPORTINGCODE09],
+	[Index Type],
+	[D_ITEM.ITEMSEGMENT02],
+	[Characteristic],
+	[Volume],
+	[Country Segment],
+	[Promotion],
+	[Next Number],
+	[Stocking Type],
+	[Primary Unit Of Measure],
+	[Secondary Unit Of Measure],
+	[Purchasing Unit Of Measure],
+	[Pricing Unit Of Measure],
+	[Shipping Unit Of Measure],
+	[Production Unit Of Measure],
+	[D_ITEM.IMUOM9],
+	[Component Unit Of Measure],
+	[Volume Unit Of Measure],
+	[D_ITEM.VALIDFROM],
+	Timestamp([D_ITEM.VALIDTO] ) AS [D_ITEM.VALIDTO],
+	[Is Current],
+	[D_ITEM.ISHISTORY],
+	[GL Class],
+	[D_ITEM.VOLUME],
+	[Pieces Per Cartoon],
+	[Pieces Per Palette],
+	[Litres Per Pieces],
+	[D_ITEM.C01_CODE],
+	[D_ITEM.C01_CODE_DESC],
+	[D_ITEM.C02_CODE],
+	[D_ITEM.C02_CODE_DESC],
+	[D_ITEM.C03_CODE],
+	[D_ITEM.C03_CODE_DESC],
+	[D_ITEM.C04_CODE],
+	[D_ITEM.C04_CODE_DESC],
+	[D_ITEM.C05_CODE],
+	[D_ITEM.C05_CODE_DESC],
+	[D_ITEM.C06_CODE],
+	[D_ITEM.C06_CODE_DESC],
+	[D_ITEM.C07_CODE],
+	[D_ITEM.C07_CODE_DESC],
+	[D_ITEM.C08_CODE],
+	[D_ITEM.C08_CODE_DESC],
+	[Volume Prisma Code],
+	[Volume Prisma Code Desc],
+	[P&L Prisma Code],
+	[P&L Prisma Code Desc],
+	[CN Number],
+	[CN Code],
+	[Shipping Code],
+	[Shipping Code Description 1],
+	[Shipping Code Description 2],
+	[Weight GR],
+	[D_ITEM.WEIGHT_OF_KR],
+	[Country Item Desc],
+	[Weight GT],
+	[PC Brand Quality Code],
+	[PC Brand Quality Code Desc],
+	[PC Brand Code],
+	[PC Brand Code Desc],
+	[PC Brand Quality Size Code],
+	[PC Brand Quality Size Code Desc],
+	[Anaplan SKU],
+	[Brand Group],
+	[Daily SKU Group],
+	[Sales Brand Details],
+	[Sales SKU],
+	[D_SALES_ITM.CATEGORY5],
+	[Import/Local/Export],
+	[Daily Brand MxM],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([Country Segment])), '-') AS [Items.Country Segment_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([Component Unit Of Measure]), '-') AS [Items.Component Unit Of Measure_GeoInfo]
+ FROM [lib://DataFiles/Items.qvd]
+(qvd);
+
+
+
+TAG FIELD [Country Segment] WITH '$geoname', '$relates_Items.Country Segment_GeoInfo';
+TAG FIELD [Items.Country Segment_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_Country Segment';
+TAG FIELD [Component Unit Of Measure] WITH '$geoname', '$relates_Items.Component Unit Of Measure_GeoInfo';
+TAG FIELD [Items.Component Unit Of Measure_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_Component Unit Of Measure';
+
+DROP TABLES __countryAliasesBase, __countryGeoBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [D_ITEM.VALIDFROM], [D_ITEM.VALIDTO] USING [autoCalendar] ;
+
+
+Set dataManagerTables = '','Korekty';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[Korekty]:
+LOAD
+	[__OrderCompanyID],
+	[__OrderDocNoID],
+	[__OrderDocTypeID],
+	[__OrderLineID],
+	[__PayerID],
+	[__ShipToID],
+	[__InvoiceCompanyID],
+	[__InvoiceDocNoID],
+	[__InvoiceDocTypeID],
+	[EDI_FLAG],
+	[KOR.Orgianl DocNo ID],
+	[KOR.Orginal DocType ID],
+	[KOR.Orignal Company ID],
+	[__DateID],
+	[KOR.Invoice Date],
+	[KOR.Shipment Date],
+	Date([KOR.Approval Date] ) AS [KOR.Approval Date],
+	[KOR.ORG Invoice Document Date],
+	[KOR.Transaction Originator],
+	[#KOR.Invoice Amount],
+	[#KOR.Gross Amount],
+	[KOR.SendByEDIFlag],
+	[KOR.Customer Purchase Order No],
+	[KOR.OrderKeyCount],
+	[KOR.InvoiceKeyCount],
+	[KOR.ServiceLevelOperator]
+ FROM [lib://DataFiles/Korekty.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [__DateID], [KOR.Invoice Date], [KOR.Shipment Date], [KOR.Approval Date], [KOR.ORG Invoice Document Date] USING [autoCalendar] ;

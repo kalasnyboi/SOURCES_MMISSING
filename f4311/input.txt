@@ -1,0 +1,459 @@
+
+      - name: F4311
+        columns:
+          - name: PDKCOO
+            data_type: VARCHAR(5)
+          - name: PDDOCO
+            data_type: NUMBER(15, 0) ## range: type FIXED, value 18063644.00
+          - name: PDDCTO
+            data_type: VARCHAR(2)
+          - name: PDSFXO
+            data_type: VARCHAR(3)
+          - name: PDLNID
+            data_type: NUMBER(12, 4) # error jde tables  FIXED, value 343000.000
+          - name: PDMCU
+            data_type: VARCHAR(12)
+          - name: PDCO
+            data_type: VARCHAR(5)
+          - name: PDOKCO
+            data_type: VARCHAR(5)
+          - name: PDOORN
+            data_type: VARCHAR(8)
+          - name: PDOCTO
+            data_type: VARCHAR(2)
+          - name: PDOGNO
+            data_type: NUMBER(20, 3)
+          - name: PDRKCO
+            data_type: VARCHAR(5)
+          - name: PDRORN
+            data_type: VARCHAR(8)
+          - name: PDRCTO
+            data_type: VARCHAR(2)
+          - name: PDRLLN
+            data_type: NUMBER(20, 3)
+          - name: PDDMCT
+            data_type: VARCHAR(12)
+          - name: PDDMCS
+            data_type: NUMBER(13, 0)
+          - name: PDBALU
+            data_type: VARCHAR(1)
+          - name: PDAN8
+            data_type: NUMBER(18, 0)
+          - name: PDSHAN
+            data_type: NUMBER(18, 0)
+          - name: PDDRQJ
+            data_type:  VARCHAR(6)
+          - name: PDTRDJ
+            data_type:  VARCHAR(6)
+          - name: PDPDDJ
+            data_type:  VARCHAR(6)
+          - name: PDOPDJ
+            data_type:  VARCHAR(6)
+          - name: PDADDJ
+            data_type:  VARCHAR(6)
+          - name: PDCNDJ
+            data_type:  VARCHAR(6)
+          - name: PDPEFJ
+            data_type:  VARCHAR(6)
+          - name: PDPPDJ
+            data_type:  VARCHAR(6)
+          - name: PDPSDJ
+            data_type:  VARCHAR(6)
+          - name: PDDSVJ
+            data_type:  VARCHAR(6)
+          - name: PDDGL
+            data_type:  VARCHAR(6)
+          - name: PDPN
+            data_type: NUMBER(20, 0)
+          - name: PDVR01
+            data_type: VARCHAR(25)
+          - name: PDVR02
+            data_type: VARCHAR(25)
+          - name: PDITM
+            data_type: NUMBER(18, 0)
+          - name: PDLITM
+            data_type: VARCHAR(25)
+          - name: PDAITM
+            data_type: VARCHAR(25)
+          - name: PDLOCN
+            data_type: VARCHAR(20)
+          - name: PDLOTN
+            data_type: VARCHAR(30)
+          - name: PDFRGD
+            data_type: VARCHAR(3)
+          - name: PDTHGD
+            data_type: VARCHAR(3)
+          - name: PDFRMP
+            data_type: NUMBER(16, 4) #NUMBER(7, 3) Number out of representable range: type FIXED, value 10000.000
+          - name: PDTHRP
+            data_type: NUMBER(16, 4) #NUMBER(7, 3) Number out of representable range: type FIXED, value 10000.000 NUMBER(7, 3)
+          - name: PDDSC1
+            data_type: VARCHAR(30) ## String '8 m"'
+          - name: PDDSC2
+            data_type: VARCHAR(30)  ## String '8 m"'
+          - name: PDLNTY
+            data_type: VARCHAR(2)
+          - name: PDNXTR
+            data_type: VARCHAR(8) ## external tables jde  VARCHAR(3) ## String '8 m"'
+          - name: PDLTTR
+            data_type: VARCHAR(3)
+          - name: PDRLIT
+            data_type: VARCHAR(8)
+          - name: PDPDS1
+            data_type: VARCHAR(3)
+          - name: PDPDS2
+            data_type: VARCHAR(3)
+          - name: PDPDS3
+            data_type: VARCHAR(3)
+          - name: PDPDS4
+            data_type: VARCHAR(3)
+          - name: PDPDS5
+            data_type: VARCHAR(3)
+          - name: PDPDP1
+            data_type: VARCHAR(3)
+          - name: PDPDP2
+            data_type: VARCHAR(3)
+          - name: PDPDP3
+            data_type: VARCHAR(3)
+          - name: PDPDP4
+            data_type: VARCHAR(3)
+          - name: PDPDP5
+            data_type: VARCHAR(3)
+          - name: PDUOM
+            data_type: VARCHAR(2)
+          - name: PDUORG
+            data_type: NUMBER(15, 0) # error jde tables  FIXED, value 343000.000
+          - name: PDUCHG
+            data_type: NUMBER(15, 0)
+          - name: PDUOPN
+            data_type: NUMBER(15, 0)
+          - name: PDUREC
+            data_type: NUMBER(15, 0) # error jde tables  FIXED, value 343000.000
+          - name: PDCREC
+            data_type: NUMBER(15, 0)
+          - name: PDURLV
+            data_type: NUMBER(15, 0)
+          - name: PDOTQY
+            data_type: VARCHAR(1)
+          - name: PDPRRC
+            data_type: NUMBER(38, 4) # error jde tables  FIXED, value 343000.000
+          - name: PDAEXP
+            data_type: NUMBER(38, 2) # error jde tables  FIXED, value 343000.000
+          - name: PDACHG
+            data_type: NUMBER(38, 2)
+          - name: PDAOPN
+            data_type: NUMBER(38, 2)
+          - name: PDAREC
+            data_type: NUMBER(38, 2)
+          - name: PDARLV
+            data_type: NUMBER(38, 2)
+          - name: PDFTN1
+            data_type: NUMBER(15, 2)
+          - name: PDTRLV
+            data_type: NUMBER(15, 2)
+          - name: PDPROV
+            data_type: VARCHAR(1)
+          - name: PDAMC3
+            data_type: NUMBER(15, 4)
+          - name: PDECST
+            data_type: NUMBER(15, 2)
+          - name: PDCSTO
+            data_type: VARCHAR(1)
+          - name: PDCSMP
+            data_type: VARCHAR(1)
+          - name: PDINMG
+            data_type: VARCHAR(10)
+          - name: PDASN
+            data_type: VARCHAR(8)
+          - name: PDPRGR
+            data_type: VARCHAR(8)
+          - name: PDCLVL
+            data_type: VARCHAR(3)
+          - name: PDCATN
+            data_type: VARCHAR(8)
+          - name: PDDSPR
+            data_type: NUMBER(20, 4) ## 10000.0000
+          - name: PDPTC
+            data_type: VARCHAR(3)
+          - name: PDTX
+            data_type: VARCHAR(1)
+          - name: PDEXR1
+            data_type: VARCHAR(2)
+          - name: PDTXA1
+            data_type: VARCHAR(10)
+          - name: PDATXT
+            data_type: VARCHAR(1)
+          - name: PDCNID
+            data_type: VARCHAR(20)
+          - name: PDCDCD
+            data_type: VARCHAR(15)
+          - name: PDNTR
+            data_type: VARCHAR(2)
+          - name: PDFRTH
+            data_type: VARCHAR(3)
+          - name: PDFRTC
+            data_type: VARCHAR(1)
+          - name: PDZON
+            data_type: VARCHAR(3)
+          - name: PDFRAT
+            data_type: VARCHAR(10)
+          - name: PDRATT
+            data_type: VARCHAR(1)
+          - name: PDANBY
+            data_type: NUMBER(18, 0)
+          - name: PDANCR
+            data_type: NUMBER(18, 0)
+          - name: PDMOT
+            data_type: VARCHAR(3)
+          - name: PDCOT
+            data_type: VARCHAR(3)
+          - name: PDSHCM
+            data_type: VARCHAR(3)
+          - name: PDSHCN
+            data_type: VARCHAR(3)
+          - name: PDUOM1
+            data_type: VARCHAR(2)
+          - name: PDPQOR
+            data_type: NUMBER(15, 0)
+          - name: PDUOM2
+            data_type: VARCHAR(2)
+          - name: PDSQOR
+            data_type: NUMBER(15, 0)
+          - name: PDUOM3
+            data_type: VARCHAR(2)
+          - name: PDITWT
+            data_type: NUMBER(20, 4)  # error jde tables  FIXED, value 343000.000 180491984100.0000
+          - name: PDWTUM
+            data_type: VARCHAR(2)
+          - name: PDITVL
+            data_type: NUMBER(20, 4)
+          - name: PDVLUM
+            data_type: VARCHAR(2)
+          - name: PDGLC
+            data_type: VARCHAR(4)
+          - name: PDCTRY
+            data_type: NUMBER(12, 0)
+          - name: PDFY
+            data_type: NUMBER(12, 0)
+          - name: PDSTTS
+            data_type: VARCHAR(2)
+          - name: PDRCD
+            data_type: VARCHAR(3)
+          - name: PDFUF1
+            data_type: VARCHAR(1)
+          - name: PDFUF2
+            data_type: VARCHAR(1)
+          - name: PDGRWT
+            data_type: NUMBER(20, 4)
+          - name: PDGWUM
+            data_type: VARCHAR(2)
+          - name: PDLT
+            data_type: VARCHAR(2)
+          - name: PDANI
+            data_type: VARCHAR(29)
+          - name: PDAID
+            data_type: VARCHAR(8)
+          - name: PDOMCU
+            data_type: VARCHAR(12)
+          - name: PDOBJ
+            data_type: VARCHAR(6)
+          - name: PDSUB
+            data_type: VARCHAR(8)
+          - name: PDSBLT
+            data_type: VARCHAR(1)
+          - name: PDSBL
+            data_type: VARCHAR(8)
+          - name: PDASID
+            data_type: VARCHAR(25)
+          - name: PDCCMP
+            data_type: NUMBER(13, 0)
+          - name: PDTAG
+            data_type: VARCHAR(8)
+          - name: PDWR01
+            data_type: VARCHAR(4)
+          - name: PDPL
+            data_type: VARCHAR(4)
+          - name: PDELEV
+            data_type: VARCHAR(3)
+          - name: PDR001
+            data_type: VARCHAR(3)
+          - name: PDRTNR
+            data_type: VARCHAR(3)
+          - name: PDLCOD
+            data_type: VARCHAR(2)
+          - name: PDPURG
+            data_type: VARCHAR(1)
+          - name: PDPROM
+            data_type: VARCHAR(1)
+          - name: PDFNLP
+            data_type: VARCHAR(1)
+          - name: PDAVCH
+            data_type: VARCHAR(1)
+          - name: PDPRPY
+            data_type: VARCHAR(1)
+          - name: PDUNCD
+            data_type: VARCHAR(1)
+          - name: PDMATY
+            data_type: VARCHAR(1)
+          - name: PDRTGC
+            data_type: VARCHAR(1)
+          - name: PDRCPF
+            data_type: VARCHAR(1)
+          - name: PDPS01
+            data_type: VARCHAR(1)
+          - name: PDPS02
+            data_type: VARCHAR(1)
+          - name: PDPS03
+            data_type: VARCHAR(1)
+          - name: PDPS04
+            data_type: VARCHAR(1)
+          - name: PDPS05
+            data_type: VARCHAR(1)
+          - name: PDPS06
+            data_type: VARCHAR(1)
+          - name: PDPS07
+            data_type: VARCHAR(1)
+          - name: PDPS08
+            data_type: VARCHAR(1)
+          - name: PDPS09
+            data_type: VARCHAR(1)
+          - name: PDPS10
+            data_type: VARCHAR(1)
+          - name: PDCRMD
+            data_type: VARCHAR(1)
+          - name: PDARTG
+            data_type: VARCHAR(12)
+          - name: PDCORD
+            data_type: NUMBER(13, 0)
+          - name: PDCHDT
+            data_type: VARCHAR(2)
+          - name: PDDOCC
+            data_type: NUMBER(18, 0)
+          - name: PDCHLN
+            data_type: NUMBER(14, 4) ##NUMBER(7, 3) : type FIXED, value 13000.000
+          - name: PDCRCD
+            data_type: VARCHAR(3)
+          - name: PDCRR
+            data_type: NUMBER(15, 0)
+          - name: PDFRRC
+            data_type: NUMBER(38, 4)  # error jde tables  FIXED, value 343000.000
+          - name: PDFEA
+            data_type: NUMBER(38, 2)
+          - name: PDFUC
+            data_type: NUMBER(20, 4)
+          - name: PDFEC
+            data_type: NUMBER(15, 2)
+          - name: PDFCHG
+            data_type: NUMBER(15, 2)
+          - name: PDFAP
+            data_type: NUMBER(15, 2)
+          - name: PDFREC
+            data_type: NUMBER(15, 2)
+          - name: PDURCD
+            data_type: VARCHAR(2)
+          - name: PDURDT
+            data_type:  VARCHAR(6)
+          - name: PDURAT
+            data_type: NUMBER(15, 2)
+          - name: PDURAB
+            data_type: NUMBER(18, 0)
+          - name: PDURRF
+            data_type: VARCHAR(15)
+          - name: PDTORG
+            data_type: VARCHAR(10)
+          - name: PDUSER
+            data_type: VARCHAR(10)
+          - name: PDPID
+            data_type: VARCHAR(10)
+          - name: PDJOBN
+            data_type: VARCHAR(10)
+          - name: PDUPMJ
+            data_type:  VARCHAR(6)
+          - name: PDTDAY
+            data_type: NUMBER(16, 0)
+          - name: PDVR05
+            data_type: VARCHAR(25)
+          - name: PDVR04
+            data_type: VARCHAR(25)
+          - name: PDSHPN
+            data_type: NUMBER(18, 0)
+          - name: PDRSHT
+            data_type: NUMBER(16, 0)
+          - name: PDPRJM
+            data_type: NUMBER(18, 0)
+          - name: PDOSFX
+            data_type: VARCHAR(3)
+          - name: PDMERL
+            data_type: VARCHAR(3)
+          - name: PDMCLN
+            data_type: NUMBER(6, 3)
+          - name: PDMACT
+            data_type: VARCHAR(1)
+          - name: PDKTLN
+            data_type: NUMBER(6, 3)
+          - name: PDFTRL
+            data_type: NUMBER(15, 2)
+          - name: PDDUAL
+            data_type: VARCHAR(1)
+          - name: PDDRQT
+            data_type: NUMBER(16, 0)
+          - name: PDDLEJ
+            data_type:  VARCHAR(6)
+          - name: PDCTAM
+            data_type: NUMBER(15, 2)
+          - name: PDCPNT
+            data_type: NUMBER(12, 2) # Number out of representable range: type FIXED, value 122304.0
+          - name: PDCHT
+            data_type: NUMBER(7, 0)
+          - name: PDCHRT
+            data_type: NUMBER(16, 0)
+          - name: PDCHRS
+            data_type: VARCHAR(1)
+          - name: PDCHMJ
+            data_type:  VARCHAR(6)
+          - name: PDBCRC
+            data_type: VARCHAR(10) # VARCHAR(3) String 'UNKNOWN' is too long and would be truncatedn VARCHAR(3)
+          - name: PDVR03
+            data_type: VARCHAR(25)
+          - name: PDLDNM
+            data_type: NUMBER(18, 0)
+          - name: PDMKFR
+            data_type: NUMBER(18, 0)
+          - name: PDPMTN
+            data_type: VARCHAR(12)
+          - name: PDUKID
+            data_type: NUMBER(15, 0)
+          - name: PDUNSPSC
+            data_type: VARCHAR(8)
+          - name: PDCMDCDE
+            data_type: VARCHAR(15)
+          - name: PDRSFX
+            data_type: VARCHAR(10) # VARCHAR(3) String 'UNKNOWN' is too long and would be truncated
+          - name: PDWVID
+            data_type: NUMBER(18, 0)
+          - name: PDCNTRTID
+            data_type: NUMBER(18, 0)
+          - name: PDCNTRTDID
+            data_type: NUMBER(15, 0)
+          - name: PDMOADJ
+            data_type: VARCHAR(10) # VARCHAR(3) String 'UNKNOWN' VARCHAR(1)
+          - name: PDPODC01
+            data_type: VARCHAR(10) # VARCHAR(3) String 'UNKNOWN' VARCHAR(3)
+          - name: PDPODC02
+            data_type: VARCHAR(10) # VARCHAR(3) String 'UNKNOWN' VARCHAR(3)
+          - name: PDPODC03
+            data_type: VARCHAR(10)
+          - name: PDPODC04
+            data_type: VARCHAR(10)
+          - name: PDJBCD
+            data_type: VARCHAR(6)
+          - name: PDSRQTY
+            data_type: NUMBER(15, 4)
+          - name: PDSRUOM
+            data_type: VARCHAR(3)
+          - name: PDCFGFL
+            data_type: VARCHAR(3) ## tring 'SZ' is too long  VARCHAR(1) 
+          - name: PDPMPN
+            data_type: VARCHAR(30)
+          - name: PDPNS
+            data_type: NUMBER(10, 0)

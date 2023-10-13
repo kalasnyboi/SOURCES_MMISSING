@@ -1,0 +1,26 @@
+        - name: MAOSTP
+          data_type: VARCHAR(3)
+        - name: MAPA8
+          data_type: NUMBER(8, 0)
+        - name: MAAN8
+          data_type: NUMBER(8, 0)
+        - name: MADSS7
+          data_type: NUMBER(7, 0)
+        - name: MABEFD
+          data_type:  VARCHAR (6)
+        - name: MAEEFD
+          data_type:  VARCHAR (6)
+        - name: MARMK
+          data_type: VARCHAR(30)
+        - name: MAUSER
+          data_type: VARCHAR(10)
+        - name: MAUPMJ
+          data_type:  VARCHAR (6)
+        - name: MAPID
+          data_type: VARCHAR(10)
+        - name: MAJOBN
+          data_type: VARCHAR(10)
+        - name: MAUPMT
+          data_type: NUMBER(6, 0)
+        - name: MASYNCS
+          data_type: NUMBER(2, 0)

@@ -1,0 +1,420 @@
+      - name: F4101
+        columns:
+          - name: IMITM
+            data_type: NUMBER(38,10) # NUMBER(8, 0)
+          - name: IMLITM
+            data_type: VARCHAR(25)
+          - name: IMAITM
+            data_type: VARCHAR(25)
+          - name: IMDSC1
+            data_type: VARCHAR(30)
+          - name: IMDSC2
+            data_type: VARCHAR(30)
+          - name: IMSRTX
+            data_type: VARCHAR(30)
+          - name: IMALN
+            data_type: VARCHAR ## VARCHAR(20) #external tables 'ELEMENTPUDŁA' ##ESTAS YA ESTABAN AUMENTADAS EN RANGO (NO FUNCIONA AUMENTARLO)(A LO MEJOR ES POR Ł) VARCHAR(30)
+          - name: IMSRP1
+            data_type: VARCHAR ## VARCHAR(20) #external tables 'ELEMENTPUDŁA' ##ESTAS YA ESTABAN AUMENTADAS EN RANGO (NO FUNCIONA AUMENTARLO)(A LO MEJOR ES POR Ł) VARCHAR(30) # 3  ## error formatJDE 'ELEMENT PUDŁA' VARCHAR(3)
+          - name: IMSRP2
+            data_type: VARCHAR(3)
+          - name: IMSRP3
+            data_type: VARCHAR(3)
+          - name: IMSRP4
+            data_type: VARCHAR(3)
+          - name: IMSRP5
+            data_type: VARCHAR(3)
+          - name: IMSRP6
+            data_type: VARCHAR(6)
+          - name: IMSRP7
+            data_type: VARCHAR(6)
+          - name: IMSRP8
+            data_type: VARCHAR(6)
+          - name: IMSRP9
+            data_type: VARCHAR(6)
+          - name: IMSRP0
+            data_type: VARCHAR(6)
+          - name: IMPRP1
+            data_type: VARCHAR(3)
+          - name: IMPRP2
+            data_type: VARCHAR(3)
+          - name: IMPRP3
+            data_type: VARCHAR(3)
+          - name: IMPRP4
+            data_type: VARCHAR(3)
+          - name: IMPRP5
+            data_type: VARCHAR(3)
+          - name: IMPRP6
+            data_type: VARCHAR(6)
+          - name: IMPRP7
+            data_type: VARCHAR(6)
+          - name: IMPRP8
+            data_type: VARCHAR(6)
+          - name: IMPRP9
+            data_type: VARCHAR(6)
+          - name: IMPRP0
+            data_type: VARCHAR(6)
+          - name: IMCDCD
+            data_type: VARCHAR(15)
+          - name: IMPDGR
+            data_type: VARCHAR(3)
+          - name: IMDSGP
+            data_type: VARCHAR(3)
+          - name: IMPRGR
+            data_type: VARCHAR(8)
+          - name: IMRPRC
+            data_type: VARCHAR(8)
+          - name: IMORPR
+            data_type: VARCHAR(8)
+          - name: IMBUYR
+            data_type: NUMBER(8, 0)
+          - name: IMDRAW
+            data_type: VARCHAR  ## VARCHAR(20) # external tables String '0.0000000000' VARCHAR(3)
+          - name: IMRVNO
+            data_type: VARCHAR(2)
+          - name: IMDSZE
+            data_type: VARCHAR(1)
+          - name: IMVCUD
+            data_type: NUMBER(19, 4)
+          - name: IMCARS
+            data_type: NUMBER(8, 0)
+          - name: IMCARP
+            data_type: NUMBER(8, 0)
+          - name: IMSHCN
+            data_type: VARCHAR ## VARCHAR(20) # external tables String '0.0000000000' VARCHAR(3)
+          - name: IMSHCM
+            data_type: VARCHAR(3)  # external tables String 'EEF' VARCHAR(3)
+          - name: IMUOM1
+            data_type: VARCHAR(3)  # external tables String 'EEF' VARCHAR(3) VARCHAR(2)
+          - name: IMUOM2
+            data_type: VARCHAR(2)
+          - name: IMUOM3
+            data_type: VARCHAR(2)
+          - name: IMUOM4
+            data_type: VARCHAR(2)
+          - name: IMUOM6
+            data_type: VARCHAR(2)
+          - name: IMUOM8
+            data_type: VARCHAR(2)
+          - name: IMUOM9
+            data_type: VARCHAR(2)
+          - name: IMUWUM
+            data_type: VARCHAR(2)
+          - name: IMUVM1
+            data_type: VARCHAR(2)
+          - name: IMSUTM
+            data_type: VARCHAR(2)
+          - name: IMUMVW
+            data_type: VARCHAR(1)
+          - name: IMCYCL
+            data_type: VARCHAR(3)
+          - name: IMGLPT
+            data_type: VARCHAR(4) ##'YYYY'
+          - name: IMPLEV
+            data_type: VARCHAR(4) ## external tables String 'YYYY' VARCHAR(1)
+          - name: IMPPLV
+            data_type: VARCHAR(1)
+          - name: IMCLEV
+            data_type: VARCHAR(1)
+          - name: IMPRPO
+            data_type: VARCHAR(1)
+          - name: IMCKAV
+            data_type: VARCHAR(1)
+          - name: IMBPFG
+            data_type: VARCHAR(1)
+          - name: IMSRCE
+            data_type: VARCHAR(1)
+          - name: IMOT1Y
+            data_type: VARCHAR(1)
+          - name: IMOT2Y
+            data_type: VARCHAR(1)
+          - name: IMSTDP
+            data_type: NUMBER(10, 3)
+          - name: IMFRMP
+            data_type: NUMBER(10, 3)
+          - name: IMTHRP
+            data_type: NUMBER(10, 3)
+          - name: IMSTDG
+            data_type: VARCHAR(3)
+          - name: IMFRGD
+            data_type: VARCHAR(3)
+          - name: IMTHGD
+            data_type: VARCHAR(3)
+          - name: IMCOTY
+            data_type: VARCHAR(1)
+          - name: IMSTKT
+            data_type: VARCHAR(1)
+          - name: IMLNTY
+            data_type: VARCHAR(2)
+          - name: IMCONT
+            data_type: VARCHAR(1)
+          - name: IMBACK
+            data_type: VARCHAR(1)
+          - name: IMIFLA
+            data_type: VARCHAR(2)
+          - name: IMTFLA
+            data_type: VARCHAR(2)
+          - name: IMINMG
+            data_type: VARCHAR(10)
+          - name: IMABCS
+            data_type: VARCHAR(1)
+          - name: IMABCM
+            data_type: VARCHAR(1)
+          - name: IMABCI
+            data_type: VARCHAR(1)
+          - name: IMOVR
+            data_type: VARCHAR(1)
+          - name: IMWARR
+            data_type: VARCHAR(8)
+          - name: IMCMCG
+            data_type: VARCHAR(8)
+          - name: IMSRNR
+            data_type: VARCHAR(1)
+          - name: IMPMTH
+            data_type: VARCHAR(1)
+          - name: IMFIFO
+            data_type: VARCHAR(1)
+          - name: IMLOTS
+            data_type: VARCHAR(1)
+          - name: IMSLD
+            data_type: NUMBER(6, 0)
+          - name: IMANPL
+            data_type: NUMBER(8, 0)
+          - name: IMMPST
+            data_type: VARCHAR(1)
+          - name: IMPCTM
+            data_type: NUMBER(10, 3)
+          - name: IMMMPC
+            data_type: NUMBER(10, 3)
+          - name: IMPTSC
+            data_type: VARCHAR(2)
+          - name: IMSNS
+            data_type: VARCHAR(1)
+          - name: IMLTLV
+            data_type: NUMBER(5, 0)
+          - name: IMLTMF
+            data_type: NUMBER(5, 0)
+          - name: IMLTCM
+            data_type: NUMBER(5, 0)
+          - name: IMOPC
+            data_type: VARCHAR(1)
+          - name: IMOPV
+            data_type: NUMBER(15, 0)
+          - name: IMACQ
+            data_type: NUMBER(15, 0)
+          - name: IMMLQ
+            data_type: NUMBER(15, 0)
+          - name: IMLTPU
+            data_type: NUMBER(7, 2)
+          - name: IMMPSP
+            data_type: VARCHAR(1)
+          - name: IMMRPP
+            data_type: VARCHAR ## VARCHAR(20) # external tables String '0.0000000000' VARCHAR(1)
+          - name: IMITC
+            data_type: VARCHAR(1)
+          - name: IMORDW
+            data_type: VARCHAR(1)
+          - name: IMMTF1
+            data_type: NUMBER(5, 0)
+          - name: IMMTF2
+            data_type: NUMBER(5, 0)
+          - name: IMMTF3
+            data_type: NUMBER(5, 0)
+          - name: IMMTF4
+            data_type: NUMBER(5, 0)
+          - name: IMMTF5
+            data_type: NUMBER(5, 0)
+          - name: IMEXPD
+            data_type: NUMBER(5, 0)
+          - name: IMDEFD
+            data_type: NUMBER(5, 0)
+          - name: IMSFLT
+            data_type: NUMBER(5, 0)
+          - name: IMMAKE
+            data_type: VARCHAR ##  VARCHAR(20) #external tables String '0.0000000000' VARCHAR(1)
+          - name: IMCOBY
+            data_type: VARCHAR(1)
+          - name: IMLLX
+            data_type: NUMBER(3, 0)
+          - name: IMCMGL
+            data_type: VARCHAR(1)
+          - name: IMCOMH
+            data_type: NUMBER(3, 0)
+          - name: IMURCD
+            data_type: VARCHAR(2)
+          - name: IMURDT
+            data_type:  VARCHAR (6)
+          - name: IMURAT
+            data_type: NUMBER(17, 2)
+          - name: IMURAB
+            data_type: NUMBER(8, 0)
+          - name: IMURRF
+            data_type: VARCHAR(15)
+          - name: IMUSER
+            data_type: VARCHAR ## VARCHAR(25)  # 10 ## error format JDE 'ELEMENTPUDŁA' VARCHAR(10)
+          - name: IMPID
+            data_type: VARCHAR(10)
+          - name: IMJOBN
+            data_type: VARCHAR(10)
+          - name: IMUPMJ
+            data_type:  VARCHAR (6)
+          - name: IMTDAY
+            data_type: NUMBER(6, 0)
+          - name: IMUPCN
+            data_type: VARCHAR(13)
+          - name: IMSCC0
+            data_type: VARCHAR(14)
+          - name: IMUMUP
+            data_type: VARCHAR(2)
+          - name: IMUMDF
+            data_type: VARCHAR(2)
+          - name: IMUMS0
+            data_type: VARCHAR(2)
+          - name: IMUMS1
+            data_type: VARCHAR(2)
+          - name: IMUMS2
+            data_type: VARCHAR(2)
+          - name: IMUMS3
+            data_type: VARCHAR(2)
+          - name: IMUMS4
+            data_type: VARCHAR(2)
+          - name: IMUMS5
+            data_type: VARCHAR(2)
+          - name: IMUMS6
+            data_type: VARCHAR(2)
+          - name: IMUMS7
+            data_type: VARCHAR(2)
+          - name: IMUMS8
+            data_type: VARCHAR(2)
+          - name: IMPOC
+            data_type: VARCHAR(1)
+          - name: IMAVRT
+            data_type: NUMBER(17, 2)
+          - name: IMEQTY
+            data_type: VARCHAR(5)
+          - name: IMWTRQ
+            data_type: VARCHAR(1)
+          - name: IMTMPL
+            data_type: VARCHAR(20)
+          - name: IMSEG1
+            data_type: VARCHAR(10)
+          - name: IMSEG2
+            data_type: VARCHAR(10)
+          - name: IMSEG3
+            data_type: VARCHAR(10)
+          - name: IMSEG4
+            data_type: VARCHAR(10)
+          - name: IMSEG5
+            data_type: VARCHAR(10)
+          - name: IMSEG6
+            data_type: VARCHAR(10)
+          - name: IMSEG7
+            data_type: VARCHAR(10)
+          - name: IMSEG8
+            data_type: VARCHAR(10)
+          - name: IMSEG9
+            data_type: VARCHAR(10)
+          - name: IMSEG0
+            data_type: VARCHAR(10)
+          - name: IMMIC
+            data_type: VARCHAR(1)
+          - name: IMAING
+            data_type: VARCHAR(1)
+          - name: IMBBDD
+            data_type: NUMBER(6, 0)
+          - name: IMCMDM
+            data_type: VARCHAR(1)
+          - name: IMLECM
+            data_type: VARCHAR(1)
+          - name: IMLEDD
+            data_type: NUMBER(6, 0)
+          - name: IMPEFD
+            data_type: NUMBER(6, 0)
+          - name: IMSBDD
+            data_type: NUMBER(6, 0)
+          - name: IMU1DD
+            data_type: NUMBER(6, 0)
+          - name: IMU2DD
+            data_type: NUMBER(6, 0)
+          - name: IMU3DD
+            data_type: NUMBER(6, 0)
+          - name: IMU4DD
+            data_type: NUMBER(6, 0)
+          - name: IMU5DD
+            data_type: NUMBER(6, 0)
+          - name: IMDLTL
+            data_type: NUMBER(9, 2)
+          - name: IMDPPO
+            data_type: VARCHAR(1)
+          - name: IMDUAL
+            data_type: VARCHAR(1)
+          - name: IMXDCK
+            data_type: VARCHAR(1)
+          - name: IMLAF
+            data_type: VARCHAR(1)
+          - name: IMLTFM
+            data_type: VARCHAR(1)
+          - name: IMRWLA
+            data_type: VARCHAR(1)
+          - name: IMLNPA
+            data_type: VARCHAR(1)
+          - name: IMLOTC
+            data_type: VARCHAR(3)
+          - name: IMAPSC
+            data_type: VARCHAR(1)
+          - name: IMAUOM
+            data_type: VARCHAR(9)
+          - name: IMCONB
+            data_type: VARCHAR(1)
+          - name: IMGCMP
+            data_type: VARCHAR(1)
+          - name: IMPRI1
+            data_type: NUMBER(19, 4)
+          - name: IMPRI2
+            data_type: NUMBER(19, 4)
+          - name: IMASHL
+            data_type: VARCHAR(1)
+          - name: IMVMINV
+            data_type: VARCHAR(1)
+          - name: IMCMETH
+            data_type: VARCHAR(1)
+          - name: IMEXPI
+            data_type: VARCHAR(1)
+          - name: IMOPTH
+            data_type: NUMBER(19, 4)
+          - name: IMCUTH
+            data_type: NUMBER(19, 4)
+          - name: IMUMTH
+            data_type: VARCHAR(3)
+          - name: IMLMFG
+            data_type: VARCHAR(1)
+          - name: IMLINE
+            data_type: VARCHAR(12)
+          - name: IMDFTPCT
+            data_type: NUMBER(25, 5)
+          - name: IMKBIT
+            data_type: VARCHAR(1)
+          - name: IMDFENDITM
+            data_type: VARCHAR(1)
+          - name: IMKANEXLL
+            data_type: VARCHAR(1)
+          - name: IMSCPSELL
+            data_type: VARCHAR(1)
+          - name: IMMOPTH
+            data_type: NUMBER(19, 4)
+          - name: IMMCUTH
+            data_type: NUMBER(19, 4)
+          - name: IMCUMTH
+            data_type: VARCHAR(3)
+          - name: IMATPRN
+            data_type: VARCHAR(80)
+          - name: IMATPCA
+            data_type: VARCHAR(1)
+          - name: IMATPAC
+            data_type: VARCHAR(5)
+          - name: IMCOORE
+            data_type: VARCHAR(1)
+          - name: IMVCPFC
+            data_type: VARCHAR(20)
+          - name: IMPNYN
+            data_type: VARCHAR(1)

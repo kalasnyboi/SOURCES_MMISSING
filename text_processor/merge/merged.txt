@@ -1,0 +1,3719 @@
+Set dataManagerTables = '','General Ledger QVD Level 1.qvw';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[General Ledger QVD Level 1.qvw]:
+LOAD
+	[@1]
+ FROM [lib://DataFiles/General Ledger QVD Level 1.qvw.log]
+(txt, utf8, no labels, delimiter is '\t', msq);
+
+
+
+Set dataManagerTables = '','General Ledger QVD Level 2.qvw';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[General Ledger QVD Level 2.qvw]:
+LOAD
+	[@1],
+	[@2],
+	[@3],
+	[@4],
+	[@5],
+	[@6],
+	[@7],
+	[@8]
+ FROM [lib://DataFiles/General Ledger QVD Level 2.qvw.log]
+(txt, utf8, no labels, delimiter is ' ', msq);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [@1] USING [autoCalendar] ;Set dataManagerTables = '','D_GL_CHART_OF_ACCNTS';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_GL_CHART_OF_ACCNTS]:
+LOAD
+	[GMAID],
+	[GMMCU],
+	[MCSTYL],
+	[MCDL01],
+	[GMOBJ],
+	[GMSUB],
+	[ACCNT_DWH_FORMAT],
+	[GMDL01],
+	[LKDL01],
+	[GMR027],
+	[GMR027_DESC],
+	[GMR028],
+	[GMR028_DESC],
+	[GMR029],
+	[GMR029_DESC],
+	[GMR030],
+	[GMR030_DESC],
+	[GMR021],
+	[GMR021_DESC],
+	[GMR022],
+	[GMR022_DESC_1],
+	[GMR022_DESC_2],
+	[MCU_TYPE],
+	[GMR032],
+	[GMR032_DESC],
+	[GMR033],
+	[GMR033_DESC],
+	[GMR025],
+	[GMR025_DESC],
+	[MCRP31],
+	[GMR031],
+	[GMR031_DESC],
+	[GMR037],
+	[GMR037_DESC],
+	[GMR039],
+	[GMR039_DESC],
+	[GMR041],
+	[GMR041_DESC],
+	[GMR024],
+	[MCU_DIRECTION],
+	[GMR042],
+	[GMR042_DESC],
+	[MCRP43],
+	[GMR035],
+	[GMR035_DESC]
+ FROM [lib://DataFiles/D_GL_CHART_OF_ACCNTS.qvd]
+(qvd);
+
+
+
+
+Set dataManagerTables = '','D_GL_PL_CURRENCY_RATES';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_GL_PL_CURRENCY_RATES]:
+LOAD
+	[CURRENCY],
+	[CXCRDC],
+	[CXAN8],
+	[DATE],
+	[RATE]
+ FROM [lib://DataFiles/D_GL_PL_CURRENCY_RATES.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [DATE] USING [autoCalendar] ;Set dataManagerTables = '','D_GL_PL_PROJECTS';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_GL_PL_PROJECTS]:
+LOAD
+	[PROJECT_ID],
+	[PRO_DESC]
+ FROM [lib://DataFiles/D_GL_PL_PROJECTS.qvd]
+(qvd);
+
+
+
+
+Set dataManagerTables = '','D_ITEM';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_ITEM]:
+LOAD
+	[SHRTID],
+	[LNGID],
+	[ITEMDESCRIPTION],
+	[ITEMDESCRIPTION2],
+	[PC_BRAND_QUALITY_CODE],
+	[PC_BRAND_QUALITY_CODE_DESC],
+	[PC_BRAND_CODE],
+	[PC_BRAND_CODE_DESC],
+	[PC_BRAND_QUALITY_SIZE_CODE],
+	[PC_BRAND_QUALITY_SIZE_DESC]
+ FROM [lib://DataFiles/D_ITEM.qvd]
+(qvd);
+
+
+
+
+Set dataManagerTables = '','D_SPECIAL_PAYEE';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[D_SPECIAL_PAYEE]:
+LOAD
+	[ADDRESSNUMBER],
+	[C_NAMEALPHA],
+	[ABAC02],
+	[C_CATEGORYCODE02],
+	[ABAC05],
+	[C_CATEGORYCODE05]
+ FROM [lib://DataFiles/D_SPECIAL_PAYEE.qvd]
+(qvd);
+
+
+
+
+Set dataManagerTables = '','F_APAR_ACCNT_PAYABLE';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[F_APAR_ACCNT_PAYABLE]:
+LOAD
+	[RPKCO],
+	[RPDCT],
+	[RPDOC],
+	[RPSFX],
+	[RECORD_TYPE],
+	[CREDITOR_ID],
+	[RPDGJ],
+	Timestamp([RPDIVJ] ) AS [RPDIVJ],
+	[RPDSVJ],
+	Timestamp([RPDDJ] ) AS [RPDDJ],
+	[RPCRCD],
+	[RPICU],
+	[RPPOST],
+	[RPAG],
+	[RPATXA],
+	[RPSTAM],
+	[RPACR],
+	[RPGLC],
+	[RPVINV],
+	[RNPYID],
+	[RPAN8],
+	[RMDMTJ],
+	[RMVDGJ],
+	[RPAC07],
+	[RPAN8_NK],
+	[COUNTRY],
+	[COUNTRY_DESC],
+	[TAXID],
+	[ACTUAL_PAYMENT_DATE],
+	[RPAAP],
+	[PAYMENT_TERMS],
+	[RNDCTM],
+	[RPPO],
+	[RPPDCT],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([COUNTRY]), '-') AS [F_APAR_ACCNT_PAYABLE.COUNTRY_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([COUNTRY_DESC])), '-') AS [F_APAR_ACCNT_PAYABLE.COUNTRY_DESC_GeoInfo],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([RNDCTM]), '-') AS [F_APAR_ACCNT_PAYABLE.RNDCTM_GeoInfo]
+ FROM [lib://DataFiles/F_APAR_ACCNT_PAYABLE.qvd]
+(qvd);
+
+
+
+TAG FIELD [COUNTRY] WITH '$geoname', '$relates_F_APAR_ACCNT_PAYABLE.COUNTRY_GeoInfo';
+TAG FIELD [F_APAR_ACCNT_PAYABLE.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY';
+TAG FIELD [COUNTRY_DESC] WITH '$geoname', '$relates_F_APAR_ACCNT_PAYABLE.COUNTRY_DESC_GeoInfo';
+TAG FIELD [F_APAR_ACCNT_PAYABLE.COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY_DESC';
+TAG FIELD [RNDCTM] WITH '$geoname', '$relates_F_APAR_ACCNT_PAYABLE.RNDCTM_GeoInfo';
+TAG FIELD [F_APAR_ACCNT_PAYABLE.RNDCTM_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_RNDCTM';
+
+DROP TABLES __countryGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [RPDGJ], [RPDIVJ], [RPDSVJ], [RPDDJ], [RMDMTJ], [RMVDGJ], [ACTUAL_PAYMENT_DATE] USING [autoCalendar] ;Set dataManagerTables = '','F_APAR_ACCNT_RECEIVABLES';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+__countryGeoBase:
+LOAD
+	ISO3Code AS [__ISO3Code],
+	ISO2Code AS [__ISO2Code],
+	Polygon AS [__Polygon]
+FROM [lib://DataFiles/countryGeo.qvd]
+(qvd);
+
+__countryAliasesBase:
+LOAD
+	Alias AS [__Country],
+	ISO3Code AS [__ISO3Code]
+FROM [lib://DataFiles/countryAliases.qvd]
+(qvd);
+
+__countryCodeIsoTwo2Polygon:
+MAPPING LOAD
+	__ISO2Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+__countryName2IsoThree:
+MAPPING LOAD
+	__Country,
+	__ISO3Code
+RESIDENT __countryAliasesBase;
+
+__countryCodeIsoThree2Polygon:
+MAPPING LOAD
+	__ISO3Code,
+	__Polygon
+RESIDENT __countryGeoBase;
+
+[F_APAR_ACCNT_RECEIVABLES]:
+LOAD
+	[RPKCO],
+	[RPDCT],
+	[RPDOC],
+	[RPSFX],
+	[RPAN8],
+	[RPAN84],
+	[RPSHAN],
+	[RPDGJ],
+	[RPDGJ_2],
+	Timestamp([RPDIVJ] ) AS [RPDIVJ],
+	[RPDSVJ],
+	Timestamp([RPDDJ] ) AS [RPDDJ],
+	[RPVDGJ],
+	[RPICUT],
+	[RPICU],
+	[RPAG],
+	[RPATXA],
+	[RPSTAM],
+	[RPCRCD],
+	[RPACR],
+	[RPPOST],
+	[RPNETTCID],
+	[RPGLC],
+	[RPRCTYPE],
+	[COMMENTS],
+	[RPPST],
+	[RPAN8_NK],
+	[RPJCL],
+	[RPAJCL],
+	[RPAN8_1],
+	[TAXID],
+	[COUNTRY],
+	[COUNTRY_DESC],
+	Timestamp([RZDMTJ] ) AS [RZDMTJ],
+	[PAYMENT_AMOUNT],
+	[PAYMENT_TERMS],
+	[RPSDCT],
+	APPLYMAP( '__countryCodeIsoTwo2Polygon', UPPER([COUNTRY]), '-') AS [F_APAR_ACCNT_RECEIVABLES.COUNTRY_GeoInfo],
+	APPLYMAP( '__countryCodeIsoThree2Polygon', APPLYMAP( '__countryName2IsoThree', LOWER([COUNTRY_DESC])), '-') AS [F_APAR_ACCNT_RECEIVABLES.COUNTRY_DESC_GeoInfo]
+ FROM [lib://DataFiles/F_APAR_ACCNT_RECEIVABLES.qvd]
+(qvd);
+
+
+
+TAG FIELD [COUNTRY] WITH '$geoname', '$relates_F_APAR_ACCNT_RECEIVABLES.COUNTRY_GeoInfo';
+TAG FIELD [F_APAR_ACCNT_RECEIVABLES.COUNTRY_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY';
+TAG FIELD [COUNTRY_DESC] WITH '$geoname', '$relates_F_APAR_ACCNT_RECEIVABLES.COUNTRY_DESC_GeoInfo';
+TAG FIELD [F_APAR_ACCNT_RECEIVABLES.COUNTRY_DESC_GeoInfo] WITH '$geopolygon', '$hidden', '$relates_COUNTRY_DESC';
+
+DROP TABLES __countryGeoBase, __countryAliasesBase;
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [RPDGJ], [RPDGJ_2], [RPDIVJ], [RPDSVJ], [RPDDJ], [RPVDGJ], [RPJCL], [RZDMTJ] USING [autoCalendar] ;Set dataManagerTables = '','F_AUDIT_GRACE_PERIOD';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[F_AUDIT_GRACE_PERIOD]:
+LOAD
+	[PZEDST],
+	[PZAN8],
+	[PZEDER],
+	[PZCO],
+	[PZCFRGUID],
+	[PZB4ORAFTR],
+	[PZB4ORAFTR_DESC],
+	[PZCFRACTION],
+	[PZCFRACTION_DESC],
+	[PZCFRMKEY],
+	[PZCFRPID],
+	[PZCFRUSER],
+	[PZDATETIME],
+	[PZAUDITTYPE],
+	[PZRPQT],
+	[PZRUQT],
+	[PZRPPR],
+	[PZRUAT],
+	[PZMPPR],
+	[PZMUAT],
+	[PZDTOL],
+	[PZGAN8]
+ FROM [lib://DataFiles/F_AUDIT_GRACE_PERIOD.qvd]
+(qvd);
+
+
+
+
+[autoCalendar]: 
+  DECLARE FIELD DEFINITION Tagged ('$date')
+FIELDS
+  Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+  Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+  Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+  Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+  Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+  Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+  Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+  Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+  Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+  If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+  Year(Today())-Year($1) AS [YearsAgo] ,
+  If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+  4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+  Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+  If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+  12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+  Month(Today())-Month($1) AS [MonthRelNo] ,
+  If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+  (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+  Week(Today())-Week($1) AS [WeekRelNo] ;
+
+DERIVE FIELDS FROM FIELDS [PZDATETIME] USING [autoCalendar] ;LOAD
+    GLAID,
+    GLCO,
+    GLKCO,
+    GLDCT,
+    GLDOC,
+    GLDGJ,
+    GLJELN,
+    GLEXTL,
+    GLEXR,
+    GLEXA,
+    GLUSER,
+    GLPOST,
+    GLLT,
+    GLCRCD,
+    GLICU,
+    GLICUT,
+    GLAN8,
+    GLAN85,
+    GLVINV,
+    GLSBL,
+    GLSBLT,
+    GLAA,
+    GLPO,
+    GLPDCT,
+    GLTORG,
+    LINK,
+    PROJECT_ID,
+    GLITM,
+    GLACR
+FROM [lib://DataFiles/F_GL_GENERAL_LEDGER.qvd]
+(qvd);
+
+LOAD
+    GMAID,
+    GMMCU,
+    MCSTYL,
+    MCDL01,
+    GMOBJ,
+    GMSUB,
+    ACCNT_DWH_FORMAT,
+    GMDL01,
+    LKDL01,
+    GMR027,
+    GMR027_DESC,
+    GMR028,
+    GMR028_DESC,
+    GMR029,
+    GMR029_DESC,
+    GMR030,
+    GMR030_DESC,
+    GMR021,
+    GMR021_DESC,
+    GMR022,
+    GMR022_DESC_1,
+    GMR022_DESC_2,
+    MCU_TYPE,
+    GMR032,
+    GMR032_DESC,
+    GMR033,
+    GMR033_DESC,
+    GMR025,
+    GMR025_DESC,
+    MCRP31,
+    GMR031,
+    GMR031_DESC,
+    GMR037,
+    GMR037_DESC,
+    GMR039,
+    GMR039_DESC,
+    GMR041,
+    GMR041_DESC,
+    GMR024,
+    MCU_DIRECTION,
+    GMR042,
+    GMR042_DESC,
+    MCRP43,
+    GMR035,
+    GMR035_DESC
+FROM [lib://DataFiles/D_GL_CHART_OF_ACCNTS.qvd]
+(qvd);
+
+LOAD
+    CURRENCY,
+    CXCRDC,
+    CXAN8,
+    "DATE",
+    "RATE"
+FROM [lib://DataFiles/D_GL_PL_CURRENCY_RATES.qvd]
+(qvd);
+
+LOAD
+    SHRTID,
+    LNGID,
+    ITEMDESCRIPTION,
+    ITEMDESCRIPTION2,
+    PC_BRAND_QUALITY_CODE,
+    PC_BRAND_QUALITY_CODE_DESC,
+    PC_BRAND_CODE,
+    PC_BRAND_CODE_DESC,
+    PC_BRAND_QUALITY_SIZE_CODE,
+    PC_BRAND_QUALITY_SIZE_DESC
+FROM [lib://DataFiles/D_ITEM.qvd]
+(qvd);
+
+LOAD
+    PZEDST,
+    PZAN8,
+    PZEDER,
+    PZCO,
+    PZCFRGUID,
+    PZB4ORAFTR,
+    PZB4ORAFTR_DESC,
+    PZCFRACTION,
+    PZCFRACTION_DESC,
+    PZCFRMKEY,
+    PZCFRPID,
+    PZCFRUSER,
+    PZDATETIME,
+    PZAUDITTYPE,
+    PZRPQT,
+    PZRUQT,
+    PZRPPR,
+    PZRUAT,
+    PZMPPR,
+    PZMUAT,
+    PZDTOL,
+    PZGAN8
+FROM [lib://DataFiles/F_AUDIT_GRACE_PERIOD.qvd]
+(qvd);
+
+LOAD
+    RPKCO,
+    RPDCT,
+    RPDOC,
+    RPSFX,
+    RPAN8,
+    RPAN84,
+    RPSHAN,
+    RPDGJ,
+    RPDGJ_2,
+    RPDIVJ,
+    RPDSVJ,
+    RPDDJ,
+    RPVDGJ,
+    RPICUT,
+    RPICU,
+    RPAG,
+    RPATXA,
+    RPSTAM,
+    RPCRCD,
+    RPACR,
+    RPPOST,
+    RPNETTCID,
+    RPGLC,
+    RPRCTYPE,
+    COMMENTS,
+    RPPST,
+    RPAN8_NK,
+    RPJCL,
+    RPAJCL,
+    RPAN8_1,
+    TAXID,
+    COUNTRY,
+    COUNTRY_DESC,
+    RZDMTJ,
+    PAYMENT_AMOUNT,
+    PAYMENT_TERMS,
+    RPSDCT
+FROM [lib://DataFiles/F_APAR_ACCNT_RECEIVABLES.qvd]
+(qvd);
+
+LOAD
+    RPKCO,
+    RPDCT,
+    RPDOC,
+    RPSFX,
+    RECORD_TYPE,
+    CREDITOR_ID,
+    RPDGJ,
+    RPDIVJ,
+    RPDSVJ,
+    RPDDJ,
+    RPCRCD,
+    RPICU,
+    RPPOST,
+    RPAG,
+    RPATXA,
+    RPSTAM,
+    RPACR,
+    RPGLC,
+    RPVINV,
+    RNPYID,
+    RPAN8,
+    RMDMTJ,
+    RMVDGJ,
+    RPAC07,
+    RPAN8_NK,
+    COUNTRY,
+    COUNTRY_DESC,
+    TAXID,
+    ACTUAL_PAYMENT_DATE,
+    RPAAP,
+    PAYMENT_TERMS,
+    RNDCTM,
+    RPPO,
+    RPPDCT
+FROM [lib://DataFiles/F_APAR_ACCNT_PAYABLE.qvd]
+(qvd);
+
+LOAD
+    ADDRESSNUMBER,
+    C_NAMEALPHA,
+    ABAC02,
+    C_CATEGORYCODE02,
+    ABAC05,
+    C_CATEGORYCODE05
+FROM [lib://DataFiles/D_SPECIAL_PAYEE.qvd]
+(qvd);
+
+LOAD
+    PROJECT_ID,
+    PRO_DESC
+FROM [lib://DataFiles/D_GL_PL_PROJECTS.qvd]
+(qvd);
+
+Set dataManagerTables = '','GeneralLedger_QVD1';
+//This block renames script tables from non generated section which conflict with the names of managed tables
+
+For each name in $(dataManagerTables) 
+    Let index = 0;
+    Let currentName = name; 
+    Let tableNumber = TableNumber(name); 
+    Let matches = 0; 
+    Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+        index = index + 1; 
+        currentName = name & '-' & index; 
+        tableNumber = TableNumber(currentName) 
+        matches = Match('$(currentName)', $(dataManagerTables));
+    Loop 
+    If index > 0 then 
+            Rename Table '$(name)' to '$(currentName)'; 
+    EndIf; 
+Next; 
+Set dataManagerTables = ;
+
+
+Unqualify *;
+
+[GeneralLedger_QVD1]:
+LOAD
+	[LOAD]
+ FROM [lib://DataFiles/GeneralLedger_QVD1.txt]
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
+
+
+
+
+LOAD
+    "Special Payee.Address Number",
+    "Special Payee.Name Of Customer/Supplier",
+    "Special Payee.Payable Type",
+    "Special Payee.Supplier Code"
+FROM [lib://DataFiles/SpecialPayee.qvd]
+(qvd);
+
+LOAD
+    "Sold To.Address Number",
+    "Sold To.D_SOLD_TO.KAK",
+    "Sold To.Name Of Customer",
+    "Sold To.Mailing Name",
+    "Sold To.Street",
+    "Sold To.Street (Continued)",
+    "Sold To.City",
+    "Sold To.State",
+    "Sold To.Country Code",
+    "Sold To.Postal Code",
+    "Sold To.Tax Number ID",
+    "Sold To.Customer Category [ABAC03]",
+    "Sold To.Customer Category",
+    "Sold To.Direction [ABAC06]",
+    "Sold To.Market Code",
+    "Sold To.Group/Non Group",
+    "Sold To.Domestic/Export",
+    "Sold To.Sales Region",
+    "Sold To.Domestic/Travel Retail",
+    "Sold To.Customer Group",
+    "Sold To.Customer group PNL",
+    "Sold To.Key Account Manager",
+    "Sold To.Distribution Channel",
+    "Sold To.Minimal Value Order",
+    "Sold To.Country Desc"
+FROM [lib://DataFiles/SoldTo.qvd]
+(qvd);
+
+LOAD
+    Projects.ProjectID,
+    Projects.ProjectDesc
+FROM [lib://DataFiles/Projects.qvd]
+(qvd);
+
+LOAD
+    Item.SHRTID,
+    Item.LNGID,
+    Item.ITEMDESCRIPTION,
+    Item.ITEMDESCRIPTION2,
+    Item.PC_BRAND_QUALITY_CODE,
+    Item.PC_BRAND_QUALITY_CODE_DESC,
+    Item.PC_BRAND_CODE,
+    Item.PC_BRAND_CODE_DESC,
+    Item.PC_BRAND_QUALITY_SIZE_CODE,
+    Item.PC_BRAND_QUALITY_SIZE_DESC
+FROM [lib://DataFiles/Item.qvd]
+(qvd);
+
+LOAD
+    "Chart Of Accounts.Account ID",
+    "Chart Of Accounts.Cost Center",
+    "Chart Of Accounts.Cost Center Type",
+    "Chart Of Accounts.Cost Center Description",
+    "Chart Of Accounts.Object Account",
+    "Chart Of Accounts.Subsidary Account",
+    "Chart Of Accounts.Account Number (DWH Format)",
+    "Chart Of Accounts.Description Of Account EN",
+    "Chart Of Accounts.Description Of Account PL",
+    "Chart Of Accounts.Responsible Person",
+    "Chart Of Accounts.Prisma Code Overheads",
+    "Chart Of Accounts.Prisma Code Overheads Description",
+    "Chart Of Accounts.Prisma Code",
+    "Chart Of Accounts.Prisma Code Description",
+    "Chart Of Accounts.Statut P&L Code",
+    "Chart Of Accounts.Statut P&L Code Description",
+    "Chart Of Accounts.Balance Code",
+    "Chart Of Accounts.Balance Code Description",
+    "Chart Of Accounts.Balance Code Description cont.",
+    D_GL_CHART_OF_ACCNTS.GMR024,
+    "Chart Of Accounts.MCU  Type",
+    "Chart Of Accounts.Internal Code",
+    "Chart Of Accounts.Internal Code Description",
+    "Chart Of Accounts.External Code",
+    "Chart Of Accounts.External Code Description",
+    "Chart Of Accounts.Estimated Cost Type",
+    "Chart Of Accounts.Estimated Cost Type Description",
+    "Chart Of Accounts.Sales Channel",
+    "Chart Of Accounts.New Prisma Code",
+    "Chart Of Accounts.New Prisma Code Description",
+    "Chart Of Accounts.Distr Handl Code",
+    "Chart Of Accounts.Distr Handl Code Description",
+    D_GL_CHART_OF_ACCNTS.GMR035,
+    D_GL_CHART_OF_ACCNTS.GMR035_DESC,
+    "Chart Of Accounts.Cost Type",
+    "Chart Of Accounts.Cost Type Description",
+    D_GL_CHART_OF_ACCNTS.MCRP43
+FROM [lib://DataFiles/GLChartAccount.qvd]
+(qvd);
+
+LOAD
+    "Chart Of Accounts.Account ID",
+    GL.Company,
+    "GL.GL Document Company",
+    "GL.GL Document Type",
+    "GL.GL Document Number",
+    Date.Date,
+    "GL.GL Explanation Remark",
+    "GL.GL Explanation",
+    "GL.Transaction Originator",
+    F_GL_GENERAL_LEDGER.GLPOST,
+    "GL.Ledger Type",
+    GL.Currency,
+    "GL.Batch Number",
+    "GL.Batch Type",
+    "Sold To.Address Number",
+    "Special Payee.Address Number",
+    "GL.Supplier Invoice Number",
+    GL.SubLedger,
+    "GL.SubLedger Type",
+    "GL.Order Document Number",
+    "GL.Order Document Type",
+    "GL.Order Originator",
+    "#GL.GL Amount",
+    PROJECT_ID,
+    F_GL_GENERAL_LEDGER.GLACR,
+    F_GL_GENERAL_LEDGER.GLITM
+FROM [lib://DataFiles/GeneralLedger.qvd]
+(qvd);
+
+LOAD
+    Date.Date,
+    "Date.Day in Week",
+    "Date.Day in Month",
+    "Date.Day In Year",
+    "Date.Week In Month",
+    "Date.Week In Year",
+    "Date.Month Number In Year",
+    Date.Quarter,
+    Date.Year,
+    "Date.Day Fiscal In Week",
+    "Date.Day Fiscal In Month",
+    "Date.Day Fiscal In Year",
+    "Date.Week Fiscal In Month",
+    "Date.Week Fiscal In Year",
+    "Date.Month Fiscal In Year",
+    "Date.Quarter Fiscal",
+    "Date.Year Fiscal"
+FROM [lib://DataFiles/Date.qvd]
+(qvd);
+
+LOAD
+    PZEDST,
+    "Sold To.Address Number",
+    PZEDER,
+    PZCO,
+    PZCFRGUID,
+    PZB4ORAFTR,
+    PZB4ORAFTR_DESC,
+    PZCFRACTION,
+    PZCFRACTION_DESC,
+    PZCFRMKEY,
+    PZCFRPID,
+    PZCFRUSER,
+    PZDATETIME,
+    PZAUDITTYPE,
+    PZRPQT,
+    PZRUQT,
+    PZRPPR,
+    PZRUAT,
+    PZMPPR,
+    PZMUAT,
+    PZDTOL,
+    PZGAN8
+FROM [lib://DataFiles/AUDIT_GRACE_PERIOD.qvd]
+(qvd);
+
+LOAD
+    "F_APAR_ACCNT_RECEIVABLES.Document Company",
+    "F_APAR_ACCNT_RECEIVABLES.Document Type",
+    "F_APAR_ACCNT_RECEIVABLES.Document Number",
+    RPSFX,
+    F_APAR_ACCNT_RECEIVABLES.RPAN84,
+    F_APAR_ACCNT_RECEIVABLES.RPSHAN,
+    "F_APAR_ACCNT_RECEIVABLES.GL Date",
+    "F_APAR_ACCNT_RECEIVABLES.GL Date2",
+    "F_APAR_ACCNT_RECEIVABLES.Invoice Date",
+    RPDSVJ,
+    "F_APAR_ACCNT_RECEIVABLES.Due Date",
+    "F_APAR_ACCNT_RECEIVABLES.Void Date",
+    RPICUT,
+    RPICU,
+    "F_APAR_ACCNT_RECEIVABLES.Gross Amount",
+    RPATXA,
+    RPSTAM,
+    "F_APAR_ACCNT_RECEIVABLES.Currency Code",
+    "F_APAR_ACCNT_RECEIVABLES.Currency Amount",
+    RPPOST,
+    RPNETTCID,
+    "F_APAR_ACCNT_RECEIVABLES.ALIAS GLC",
+    RPRCTYPE,
+    COMMENTS,
+    RPPST,
+    "F_APAR_ACCNT_RECEIVABLES.Address Number NK",
+    "F_APAR_ACCNT_RECEIVABLES.Date Invoice Closed",
+    "F_APAR_ACCNT_RECEIVABLES.Actual Date Invoice Closed",
+    "F_APAR_ACCNT_RECEIVABLES.Address Number",
+    F_APAR_ACCNT_RECEIVABLES.TAXID,
+    F_APAR_ACCNT_RECEIVABLES.Country,
+    F_APAR_ACCNT_RECEIVABLES.Country_desc,
+    F_APAR_ACCNT_RECEIVABLES.RZDMTJ,
+    "F_APAR_ACCNT_RECEIVABLES.Payment amount",
+    "F_APAR_ACCNT_RECEIVABLES.Payment terms",
+    "F_APAR_ACCNT_RECEIVABLES.Payment terms desc.",
+    F_APAR_ACCNT_RECEIVABLES.NET,
+    "F_APAR_ACCNT_RECEIVABLES.Sales Document Type"
+FROM [lib://DataFiles/APAR_ACCNT_RECEIVABLES.qvd]
+(qvd);
+
+LOAD
+    "APAR_ACCNT_PAYABLE.Document Company",
+    "APAR_ACCNT_PAYABLE.Document Type",
+    "APAR_ACCNT_PAYABLE.Document Number",
+    "APAR_ACCNT_PAYABLE.Record Type",
+    "APAR_ACCNT_PAYABLE.Creditor ID",
+    "APAR_ACCNT_PAYABLE.GL Date",
+    "APAR_ACCNT_PAYABLE.Invoice Date",
+    "APAR_ACCNT_PAYABLE.Due Date",
+    "APAR_ACCNT_PAYABLE.Currency Code",
+    APAR_ACCNT_PAYABLE.RPICU,
+    "APAR_ACCNT_PAYABLE.G/L Posted Code",
+    "APAR_ACCNT_PAYABLE.Gross Amount",
+    "APAR_ACCNT_PAYABLE.Currency Amount",
+    "APAR_ACCNT_PAYABLE.ALIAS GLC",
+    "APAR_ACCNT_PAYABLE.Invoice Number",
+    "APAR_ACCNT_PAYABLE.Payment ID",
+    "APAR_ACCNT_PAYABLE.Address Number",
+    "APAR_ACCNT_PAYABLE.Payment Date",
+    "APAR_ACCNT_PAYABLE.Void Date",
+    "APAR_ACCNT_PAYABLE.Address Book 07",
+    "APAR_ACCNT_PAYABLE.Address Name",
+    APAR_ACCNT_PAYABLE.Country,
+    APAR_ACCNT_PAYABLE.Country_Desc,
+    APAR_ACCNT_PAYABLE.Tax_id,
+    "APAR_ACCNT_PAYABLE.Actual Payment date",
+    "APAR_ACCNT_PAYABLE.Actual Payment Date_FLAG",
+    "APAR_ACCNT_PAYABLE.Open Amount",
+    "APAR_ACCNT_PAYABLE.Payment terms",
+    "APAR_ACCNT_PAYABLE.Payment terms desc.",
+    APAR_ACCNT_PAYABLE.NET,
+    "APAR_ACCNT_PAYABLE.Typ dok. płatności/pozycji",
+    RPPO,
+    RPPDCT
+FROM [lib://DataFiles/APAR_ACCNT_PAYABLE.qvd]
+(qvd);
+
+LOAD
+    DATE.Month,
+    #DYST_WYB,
+    #DYST_BAL
+FROM [lib://DataFiles/DYSTRYBUCJA_WAZONA.qvd]
+(qvd);
+
+LOAD
+    ESTIMATION_DATE,
+    EFFECTIVE_DATE,
+    SOLD_TO_ID,
+    ITEM_ID,
+    BUDGET_ITEM_ID,
+    MCU_ID,
+    VL,
+    EXCISE,
+    R021_GROSS_SLS_AMOUNT,
+    R022_REBATE_ON_AMOUNT,
+    R022_REBATE_PROMO_AMOUNT,
+    R022_REBATE_CASH_AMOUNT,
+    R022_REBATE_OFF_AMOUNT,
+    R022_AD_TOTAL,
+    R022_EXCISE_AMOUNT,
+    R023_SRV_PD_TO_DIST_KEY_AMOUNT,
+    R023_SRV_PD_TO_DIST_GRP_AMOUNT,
+    R023_SRV_PAID_TO_DISTR,
+    R024_SRV_RENDERED,
+    RT02_NET_SALES,
+    R031_COG_NON_FINISHED_G,
+    R032_COG_ST_TRADE_G,
+    OTH_COG_GLAA,
+    TOTAL_COG,
+    R032_STANDARD_ST_COST,
+    E00_DIFF_EXCH_RATE,
+    TOTAL_COG_ST,
+    RT20_BRND_OWNR_MRG,
+    R041_PROD_COST,
+    R042_HNDL_COST,
+    R044_IMP_DUTIES,
+    R061_DISTR_COST_VAR_AMOUNT,
+    R061_DISTR_COST_STD_AMOUNT,
+    R061_DISTR_COST,
+    R041_ST_PROD_COST_ST,
+    R031_ST_COG_COST_ST,
+    R061_DISTR_COST_ST,
+    R041_V_PROD_VARIANCE,
+    R031_V_COG_VARIANCE,
+    R061_V_DISTR_VARIANCE,
+    R043_MAN_VARIANCE,
+    RT04_TOTAL_COST,
+    RT04_ST_TOTAL_COST,
+    RT05_GROSS_MRG,
+    RT05_ST_GROSS_MRG,
+    RT06_ST_CONTR_MRG,
+    RT06_CONTR_MRG,
+    R071_MEDIA_EXP,
+    R073_TRAD_AP_KEY_AMOUNT,
+    R073_TRAD_AP_GRP_AMOUNT,
+    R073_TRADE_AP,
+    R072_OTH_CONS_AP,
+    RT07_TOTAL_AP,
+    BOI_ST_GLAA,
+    RT08_OTH_BOI_GLAA,
+    RT09_ST_CAAP,
+    RT09_CAAP,
+    ESTIMATION_CODE,
+    R061FD_FIXED_DIST_COST,
+    R061_VAR_TRANS_DIST_COSTS,
+    R061_VAR_WAREHOUSE_DIST_COSTS,
+    FREE_GOODS_VL,
+    R022PF_OFF_PROMO_REB,
+    PINGPONG_AN8,
+    R031_COG_WET_O_AMOUNT,
+    R031_COG_DRY_O_AMOUNT,
+    R022PS_OFF_PROMO_STD_REB,
+    R022S_PROMO_STD_REB,
+    "RATE",
+    R031_COG_NON_ST_STD,
+    R042_HNDLNG_STD_EXPORT,
+    R042_HNDL_O_EXPORT,
+    A_R043M_MIX_VARIANCE,
+    R061_DIST_STD_EX,
+    R061_DISTR_EXPORT,
+    R061_DIST_O_EX,
+    R041S_PROD_COSTS,
+    R074_MEDIA,
+    R075_CONTENT,
+    R076_VISIBILITY,
+    R077_ACTIVATION,
+    R078_SUPPORT
+FROM [lib://DataFiles/PL_TMP_T_BUDGET.qvd]
+(qvd);
+
+LOAD
+    SDDGL,
+    SDAN8,
+    SDKCOO,
+    SDITM,
+    MCU,
+    VL,
+    R022_EXCISE,
+    R022_CAPACITY_FEE,
+    R021_GROSS_SALES,
+    R022_REBATE_CASH,
+    R022_REBATE_ON,
+    R022_REBATE_PROMO,
+    R022_REBATE_PROMO_STD,
+    R022_REBATE_PROMO_DD,
+    R022_REBATE_OFF,
+    R022_REBATE_OFF_PROM_AMOUNT,
+    R022_REBATE_OFF_PROM_STD,
+    R022_ALOWANCES_DISCOUNTS,
+    R023_SRV_PD_T_DIST_BC,
+    R023_SRV_PD_DIST_R,
+    R023_SRV_PAID_TO_DIST_FA,
+    R023_SRV_PAID_TO_DIST,
+    R024_SRV_RNDRD,
+    RT02_NET_SALES,
+    R031_COG_NON_ST_STD,
+    R031_COG_NON_ST_VAR,
+    R031_COG_ST_WX,
+    R032_COG_ST_STD,
+    R032_COG_ST_VAR,
+    R032_ST_STANDARD_COST,
+    RT20_BRAND_OWNER_MARGIN,
+    R041_PROD_STD,
+    R041_PROD_VAR,
+    R042_HNDLNG,
+    R061_DISTR_STD,
+    R061_DISTR_VAR,
+    R061_DISTR,
+    R031_ST_COG,
+    R041_ST_PRODUCTION,
+    R061_ST_DISTRIBUTION,
+    R031_V_COG_MAN_VAR,
+    R041_V_PROD_MAN_VAR,
+    R061_VAR_DIST_MAN_VAR,
+    R043_MAN_VARIANCE,
+    RT04_ST_TOTAL_COST_ST,
+    RT04_TOTAL_COST,
+    RT05_ST_GROSS_MARGIN_ST,
+    RT05_GROSS_MARGIN,
+    RT06_ST_CONTR_MARGIN_ST,
+    RT06_CONTR_MARGIN,
+    R071_MEDIA_EXP,
+    R071_MEDIA_AP_R,
+    R071_MEDIA_EXP_BC,
+    R072_OTH_CONS_EXP_BC,
+    R072_OTH_CONS_AP_BC_R,
+    R072_OTH_CONS_EXP_FA,
+    R072_OTH_CONS_AP_X_AMOUNT,
+    R072_OTH_CONS,
+    R073_TRADE_EXP_BC,
+    R073_TRADE_AP_BC_R,
+    R073_TRADE_EXP_FA,
+    R073_TRADE_EXP,
+    R074_MEDIA_BC,
+    R074_MEDIA_R,
+    R074_MEDIA_FA,
+    R074_MEDIA,
+    R075_CONTENT_BC,
+    R075_CONTENT_R,
+    R075_CONTENT_FA,
+    R075_CONTENT,
+    R076_VISIBILITY_BC,
+    R076_VISIBILITY_R,
+    R076_VISIBILITY_FA,
+    R076_VISIBILITY,
+    R077_ACTIV_BC,
+    R077_ACTIV_R,
+    R077_ACTIV_FA,
+    R077_ACTIVATION,
+    R077_TRAINING_AMOUNT,
+    R078_SUPPORT_BC,
+    R078_SUPPORT_R,
+    R078_SUPPORT_FA,
+    R078_SUPPORT,
+    RT07_TOTAL_AP,
+    R081_BOI_LOCAL_AMOUNT,
+    R082_BOI_ST_AMOUNT,
+    RT08_BOI_LOCAL,
+    RT08_BOI_ST,
+    RT09_ST_CAAP_ST,
+    RT09_CAAP,
+    R044_IMP_DUTIES,
+    R032_COG_ST_WX,
+    ISHISTORY,
+    ER01_EXCH_RATE_DIFF,
+    R072_TRAINING_AMOUNT,
+    BGT_ITEM_ID,
+    R032_COGS_DW,
+    R032_COGS_BO,
+    R073_SPONS_EDUC,
+    R031_COG_WET_O_AMOUNT,
+    R031_COG_DRY_O_AMOUNT,
+    R031_COG_MV_AMOUNT,
+    PINGPONG_AN8,
+    SDAN8_NK,
+    BG_SDAN8_NK,
+    SDITM_NK,
+    BG_SDITM_NK,
+    MCU_NK,
+    PINGPONG_AN8_NK,
+    LINK,
+    R042_HNDLNG_EXPORT,
+    R042_HNDLNG_STD_EXPORT,
+    R042_HNDL_O_EXPORT,
+    R061_DISTR_EXPORT,
+    R061_DIST_STD_EX,
+    R061_DIST_O_EX,
+    R71011_MEDIA_TV,
+    R71012_MEDIA_OOH,
+    R71013_MEDIA_PR_ADVER,
+    R71014_MEDIA_OTH_TRAD_MEDIA,
+    R71021_MEDIA_PAID_SOCIAL_MEDIA,
+    R71021_MEDIA_DIGITAL,
+    R71021_MEDIA_PAID_SEARCH,
+    R71021_MEDIA_INFLU,
+    R71021_MEDIA_OTHER_DIGIT,
+    R7103_MEDIA_AGENCY_FEES,
+    R7104_MEDIA_SPON_PARTNER,
+    R72011_CREA_AG_FEES,
+    R72012_CREA_MARK_CONT_ASS_DEV,
+    R72013_CREA_VISIBILITY,
+    R72014_CREA_OWNED_MEDIA_DEV,
+    R72015_CREA_TALENT_SPONSOR,
+    R72021_CREA_INN_AGENCY_FEES,
+    R72022_CREA_INN_PROD_DEV,
+    R72023_CREA_INN_CONS_RES,
+    R72024_CREA_INN_VAP_LE,
+    R73011_L3F_ONT_SAMPLE,
+    R73012_L3F_ONT_ACTIVATION,
+    R73013_L3F_ONT_VISIBILITY,
+    R73014_L3F_ONT_VAP_LE,
+    R73021_L3F_OFFT_SAMPLE,
+    R73022_L3F_OFFT_ACTIVATION,
+    R73023_L3F_OFFT_VISIBILITY,
+    R73024_L3F_OFFT_VAP_LE,
+    R7303_L3F_AG_WARE_FEES,
+    R7304_L3F_ECOM,
+    R7401_EXP_EXP_PR_AGENCY,
+    R7402_EXP_BRAND_EVENTS,
+    R7403_EXP_AMBASADORS,
+    R7404_EXP_CRM,
+    R7405_EXP_BRAND_HOME,
+    R7406_EXP_OTH_EXP,
+    R7501_SUPP_MARKERING_STRATEGY,
+    R7502_SUPP_CONS_RES,
+    R7503_SUPP_DATA_ANAL,
+    R7504_SUPP_INT_ACT,
+    R7505_SUPP_OTHER,
+    R76011_TRADE_MERCH_ONTRADE,
+    R76012_TRADE_CUSTOM_TRADE_ON,
+    R76021_TRADE_MERCH_OFFTREADE,
+    R76012_TRADE_CUSTOM_TRADE_OFF,
+    R7603_TRADE_OTHER,
+    R023_SRV_PD_DIST_GL_NEW
+FROM [lib://DataFiles/F_PL_V2_PL_MAIN.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    ITEMID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    INVSENDBYEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    SECONDARYUOM,
+    SHIPPINGUOM,
+    PRODUCTIONUOM,
+    WEIGHTUOM,
+    VOLUMEUOM,
+    L1UOM,
+    TKNVIAEDI,
+    SDNXTR,
+    SDLTTR,
+    ORDER_DATE_ID,
+    CUSTOMER_PO_NUM,
+    CUSTOMER_PO_NUM2,
+    SDITM,
+    BDGT_ITEM,
+    SDMCU,
+    SDKIT,
+    SDAN8,
+    SDSHAN,
+    BDGT_ITEM_NK,
+    BG_SDAN8,
+    SDPDDJ,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE
+FROM [lib://DataFiles/F_OPN_SALES.qvd]
+(qvd);
+
+LOAD
+    ITEMID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    GLDATEID,
+    APPDATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    INVSENDBYEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    SECONDARYUOM,
+    SHIPPINGUOM,
+    PRODUCTIONUOM,
+    WEIGHTUOM,
+    VOLUMEUOM,
+    L1UOM,
+    ISHISTORY,
+    TKNVIAEDI,
+    ORDER_DATE_ID,
+    CUSTOMER_PO_NUM,
+    CUSTOMER_PO_NUM2,
+    CNCL_PRIMARYUOM,
+    CNCL_SECONDARYUOM,
+    CNCL_SHIPPINGUOM,
+    CNCL_PRODUCTIONUOM,
+    CNCL_WEIGHTUOM,
+    CNCL_VOLUMEUOM,
+    CNCL_L1UOM,
+    SDITM,
+    REQUESTED_DATE_ID,
+    BGT_ITEM_ID,
+    SDMCU,
+    SDKIT,
+    SDAN8,
+    SDSHAN,
+    BGT_ITEM_NK,
+    BG_SDAN8,
+    SD_ITEM,
+    SDCARS_NK,
+    "USERID",
+    TRANSACTIONORIGINATOR,
+    DELIVERYNUMBER,
+    RABAT_DD,
+    SDPDDJ,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE,
+    SDLOTN
+FROM [lib://DataFiles/F_CLSD_SALES.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODOCNO,
+    ODCTTYPE,
+    ISEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    L1UOM,
+    SDKIT,
+    SDMCU,
+    SDAN8_NK,
+    SDSHAN_NK,
+    KIT_VOLUMEN
+FROM [lib://DataFiles/F_OPN_KIT_SALES.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    GLDATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    ISEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    ORDER_DATE_ID,
+    CNCL_PRIMARYUOM,
+    L1UOM,
+    SDKIT,
+    SDMCU,
+    SDAN8_NK,
+    SDSHAN_NK,
+    KIT_VOLUME,
+    SDCARS_NK,
+    SEC_UOM,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE
+FROM [lib://DataFiles/F_CLSD_KIT_SALES.qvd]
+(qvd);
+
+LOAD
+    DATE.Month,
+    #DYST_WYB,
+    #DYST_BAL
+FROM [lib://DataFiles/DYSTRYBUCJA_WAZONA.qvd]
+(qvd);
+
+LOAD
+    ESTIMATION_DATE,
+    EFFECTIVE_DATE,
+    SOLD_TO_ID,
+    ITEM_ID,
+    BUDGET_ITEM_ID,
+    MCU_ID,
+    VL,
+    EXCISE,
+    R021_GROSS_SLS_AMOUNT,
+    R022_REBATE_ON_AMOUNT,
+    R022_REBATE_PROMO_AMOUNT,
+    R022_REBATE_CASH_AMOUNT,
+    R022_REBATE_OFF_AMOUNT,
+    R022_AD_TOTAL,
+    R022_EXCISE_AMOUNT,
+    R023_SRV_PD_TO_DIST_KEY_AMOUNT,
+    R023_SRV_PD_TO_DIST_GRP_AMOUNT,
+    R023_SRV_PAID_TO_DISTR,
+    R024_SRV_RENDERED,
+    RT02_NET_SALES,
+    R031_COG_NON_FINISHED_G,
+    R032_COG_ST_TRADE_G,
+    OTH_COG_GLAA,
+    TOTAL_COG,
+    R032_STANDARD_ST_COST,
+    E00_DIFF_EXCH_RATE,
+    TOTAL_COG_ST,
+    RT20_BRND_OWNR_MRG,
+    R041_PROD_COST,
+    R042_HNDL_COST,
+    R044_IMP_DUTIES,
+    R061_DISTR_COST_VAR_AMOUNT,
+    R061_DISTR_COST_STD_AMOUNT,
+    R061_DISTR_COST,
+    R041_ST_PROD_COST_ST,
+    R031_ST_COG_COST_ST,
+    R061_DISTR_COST_ST,
+    R041_V_PROD_VARIANCE,
+    R031_V_COG_VARIANCE,
+    R061_V_DISTR_VARIANCE,
+    R043_MAN_VARIANCE,
+    RT04_TOTAL_COST,
+    RT04_ST_TOTAL_COST,
+    RT05_GROSS_MRG,
+    RT05_ST_GROSS_MRG,
+    RT06_ST_CONTR_MRG,
+    RT06_CONTR_MRG,
+    R071_MEDIA_EXP,
+    R073_TRAD_AP_KEY_AMOUNT,
+    R073_TRAD_AP_GRP_AMOUNT,
+    R073_TRADE_AP,
+    R072_OTH_CONS_AP,
+    RT07_TOTAL_AP,
+    BOI_ST_GLAA,
+    RT08_OTH_BOI_GLAA,
+    RT09_ST_CAAP,
+    RT09_CAAP,
+    ESTIMATION_CODE,
+    R061FD_FIXED_DIST_COST,
+    R061_VAR_TRANS_DIST_COSTS,
+    R061_VAR_WAREHOUSE_DIST_COSTS,
+    FREE_GOODS_VL,
+    R022PF_OFF_PROMO_REB,
+    PINGPONG_AN8,
+    R031_COG_WET_O_AMOUNT,
+    R031_COG_DRY_O_AMOUNT,
+    R022PS_OFF_PROMO_STD_REB,
+    R022S_PROMO_STD_REB,
+    "RATE",
+    R031_COG_NON_ST_STD,
+    R042_HNDLNG_STD_EXPORT,
+    R042_HNDL_O_EXPORT,
+    A_R043M_MIX_VARIANCE,
+    R061_DIST_STD_EX,
+    R061_DISTR_EXPORT,
+    R061_DIST_O_EX,
+    R041S_PROD_COSTS,
+    R074_MEDIA,
+    R075_CONTENT,
+    R076_VISIBILITY,
+    R077_ACTIVATION,
+    R078_SUPPORT
+FROM [lib://DataFiles/PL_TMP_T_BUDGET.qvd]
+(qvd);
+
+LOAD
+    SDDGL,
+    SDAN8,
+    SDKCOO,
+    SDITM,
+    MCU,
+    VL,
+    R022_EXCISE,
+    R022_CAPACITY_FEE,
+    R021_GROSS_SALES,
+    R022_REBATE_CASH,
+    R022_REBATE_ON,
+    R022_REBATE_PROMO,
+    R022_REBATE_PROMO_STD,
+    R022_REBATE_PROMO_DD,
+    R022_REBATE_OFF,
+    R022_REBATE_OFF_PROM_AMOUNT,
+    R022_REBATE_OFF_PROM_STD,
+    R022_ALOWANCES_DISCOUNTS,
+    R023_SRV_PD_T_DIST_BC,
+    R023_SRV_PD_DIST_R,
+    R023_SRV_PAID_TO_DIST_FA,
+    R023_SRV_PAID_TO_DIST,
+    R024_SRV_RNDRD,
+    RT02_NET_SALES,
+    R031_COG_NON_ST_STD,
+    R031_COG_NON_ST_VAR,
+    R031_COG_ST_WX,
+    R032_COG_ST_STD,
+    R032_COG_ST_VAR,
+    R032_ST_STANDARD_COST,
+    RT20_BRAND_OWNER_MARGIN,
+    R041_PROD_STD,
+    R041_PROD_VAR,
+    R042_HNDLNG,
+    R061_DISTR_STD,
+    R061_DISTR_VAR,
+    R061_DISTR,
+    R031_ST_COG,
+    R041_ST_PRODUCTION,
+    R061_ST_DISTRIBUTION,
+    R031_V_COG_MAN_VAR,
+    R041_V_PROD_MAN_VAR,
+    R061_VAR_DIST_MAN_VAR,
+    R043_MAN_VARIANCE,
+    RT04_ST_TOTAL_COST_ST,
+    RT04_TOTAL_COST,
+    RT05_ST_GROSS_MARGIN_ST,
+    RT05_GROSS_MARGIN,
+    RT06_ST_CONTR_MARGIN_ST,
+    RT06_CONTR_MARGIN,
+    R071_MEDIA_EXP,
+    R071_MEDIA_AP_R,
+    R071_MEDIA_EXP_BC,
+    R072_OTH_CONS_EXP_BC,
+    R072_OTH_CONS_AP_BC_R,
+    R072_OTH_CONS_EXP_FA,
+    R072_OTH_CONS_AP_X_AMOUNT,
+    R072_OTH_CONS,
+    R073_TRADE_EXP_BC,
+    R073_TRADE_AP_BC_R,
+    R073_TRADE_EXP_FA,
+    R073_TRADE_EXP,
+    R074_MEDIA_BC,
+    R074_MEDIA_R,
+    R074_MEDIA_FA,
+    R074_MEDIA,
+    R075_CONTENT_BC,
+    R075_CONTENT_R,
+    R075_CONTENT_FA,
+    R075_CONTENT,
+    R076_VISIBILITY_BC,
+    R076_VISIBILITY_R,
+    R076_VISIBILITY_FA,
+    R076_VISIBILITY,
+    R077_ACTIV_BC,
+    R077_ACTIV_R,
+    R077_ACTIV_FA,
+    R077_ACTIVATION,
+    R077_TRAINING_AMOUNT,
+    R078_SUPPORT_BC,
+    R078_SUPPORT_R,
+    R078_SUPPORT_FA,
+    R078_SUPPORT,
+    RT07_TOTAL_AP,
+    R081_BOI_LOCAL_AMOUNT,
+    R082_BOI_ST_AMOUNT,
+    RT08_BOI_LOCAL,
+    RT08_BOI_ST,
+    RT09_ST_CAAP_ST,
+    RT09_CAAP,
+    R044_IMP_DUTIES,
+    R032_COG_ST_WX,
+    ISHISTORY,
+    ER01_EXCH_RATE_DIFF,
+    R072_TRAINING_AMOUNT,
+    BGT_ITEM_ID,
+    R032_COGS_DW,
+    R032_COGS_BO,
+    R073_SPONS_EDUC,
+    R031_COG_WET_O_AMOUNT,
+    R031_COG_DRY_O_AMOUNT,
+    R031_COG_MV_AMOUNT,
+    PINGPONG_AN8,
+    SDAN8_NK,
+    BG_SDAN8_NK,
+    SDITM_NK,
+    BG_SDITM_NK,
+    MCU_NK,
+    PINGPONG_AN8_NK,
+    LINK,
+    R042_HNDLNG_EXPORT,
+    R042_HNDLNG_STD_EXPORT,
+    R042_HNDL_O_EXPORT,
+    R061_DISTR_EXPORT,
+    R061_DIST_STD_EX,
+    R061_DIST_O_EX,
+    R71011_MEDIA_TV,
+    R71012_MEDIA_OOH,
+    R71013_MEDIA_PR_ADVER,
+    R71014_MEDIA_OTH_TRAD_MEDIA,
+    R71021_MEDIA_PAID_SOCIAL_MEDIA,
+    R71021_MEDIA_DIGITAL,
+    R71021_MEDIA_PAID_SEARCH,
+    R71021_MEDIA_INFLU,
+    R71021_MEDIA_OTHER_DIGIT,
+    R7103_MEDIA_AGENCY_FEES,
+    R7104_MEDIA_SPON_PARTNER,
+    R72011_CREA_AG_FEES,
+    R72012_CREA_MARK_CONT_ASS_DEV,
+    R72013_CREA_VISIBILITY,
+    R72014_CREA_OWNED_MEDIA_DEV,
+    R72015_CREA_TALENT_SPONSOR,
+    R72021_CREA_INN_AGENCY_FEES,
+    R72022_CREA_INN_PROD_DEV,
+    R72023_CREA_INN_CONS_RES,
+    R72024_CREA_INN_VAP_LE,
+    R73011_L3F_ONT_SAMPLE,
+    R73012_L3F_ONT_ACTIVATION,
+    R73013_L3F_ONT_VISIBILITY,
+    R73014_L3F_ONT_VAP_LE,
+    R73021_L3F_OFFT_SAMPLE,
+    R73022_L3F_OFFT_ACTIVATION,
+    R73023_L3F_OFFT_VISIBILITY,
+    R73024_L3F_OFFT_VAP_LE,
+    R7303_L3F_AG_WARE_FEES,
+    R7304_L3F_ECOM,
+    R7401_EXP_EXP_PR_AGENCY,
+    R7402_EXP_BRAND_EVENTS,
+    R7403_EXP_AMBASADORS,
+    R7404_EXP_CRM,
+    R7405_EXP_BRAND_HOME,
+    R7406_EXP_OTH_EXP,
+    R7501_SUPP_MARKERING_STRATEGY,
+    R7502_SUPP_CONS_RES,
+    R7503_SUPP_DATA_ANAL,
+    R7504_SUPP_INT_ACT,
+    R7505_SUPP_OTHER,
+    R76011_TRADE_MERCH_ONTRADE,
+    R76012_TRADE_CUSTOM_TRADE_ON,
+    R76021_TRADE_MERCH_OFFTREADE,
+    R76012_TRADE_CUSTOM_TRADE_OFF,
+    R7603_TRADE_OTHER,
+    R023_SRV_PD_DIST_GL_NEW
+FROM [lib://DataFiles/F_PL_V2_PL_MAIN.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    ITEMID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    INVSENDBYEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    SECONDARYUOM,
+    SHIPPINGUOM,
+    PRODUCTIONUOM,
+    WEIGHTUOM,
+    VOLUMEUOM,
+    L1UOM,
+    TKNVIAEDI,
+    SDNXTR,
+    SDLTTR,
+    ORDER_DATE_ID,
+    CUSTOMER_PO_NUM,
+    CUSTOMER_PO_NUM2,
+    SDITM,
+    BDGT_ITEM,
+    SDMCU,
+    SDKIT,
+    SDAN8,
+    SDSHAN,
+    BDGT_ITEM_NK,
+    BG_SDAN8,
+    SDPDDJ,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE
+FROM [lib://DataFiles/F_OPN_SALES.qvd]
+(qvd);
+
+LOAD
+    ITEMID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    GLDATEID,
+    APPDATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    INVSENDBYEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    SECONDARYUOM,
+    SHIPPINGUOM,
+    PRODUCTIONUOM,
+    WEIGHTUOM,
+    VOLUMEUOM,
+    L1UOM,
+    ISHISTORY,
+    TKNVIAEDI,
+    ORDER_DATE_ID,
+    CUSTOMER_PO_NUM,
+    CUSTOMER_PO_NUM2,
+    CNCL_PRIMARYUOM,
+    CNCL_SECONDARYUOM,
+    CNCL_SHIPPINGUOM,
+    CNCL_PRODUCTIONUOM,
+    CNCL_WEIGHTUOM,
+    CNCL_VOLUMEUOM,
+    CNCL_L1UOM,
+    SDITM,
+    REQUESTED_DATE_ID,
+    BGT_ITEM_ID,
+    SDMCU,
+    SDKIT,
+    SDAN8,
+    SDSHAN,
+    BGT_ITEM_NK,
+    BG_SDAN8,
+    SD_ITEM,
+    SDCARS_NK,
+    "USERID",
+    TRANSACTIONORIGINATOR,
+    DELIVERYNUMBER,
+    RABAT_DD,
+    SDPDDJ,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE,
+    SDLOTN
+FROM [lib://DataFiles/F_CLSD_SALES.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODOCNO,
+    ODCTTYPE,
+    ISEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    L1UOM,
+    SDKIT,
+    SDMCU,
+    SDAN8_NK,
+    SDSHAN_NK,
+    KIT_VOLUMEN
+FROM [lib://DataFiles/F_OPN_KIT_SALES.qvd]
+(qvd);
+
+LOAD
+    LINEID,
+    KITID,
+    SOLDTOID,
+    SHIPTOID,
+    DATEID,
+    GLDATEID,
+    COMPANYNO,
+    DCTTYPE,
+    DOCNO,
+    DOCLINEID,
+    OCOMPANYNO,
+    ODCTTYPE,
+    ODOCNO,
+    ISEDI,
+    STATUS,
+    EXCISE,
+    BASEPRICE,
+    RABATON,
+    RABATPROMO,
+    RABATCASH,
+    NETPRICE,
+    RABATOFF,
+    NETNETPRICE,
+    SDCRCD,
+    F_EXCISE,
+    F_BASEPRICE,
+    F_RABATON,
+    F_RABATPROMO,
+    F_RABATCASH,
+    F_NETPRICE,
+    F_RABATOFF,
+    F_NETNETPRICE,
+    PRIMARYUOM,
+    ORDER_DATE_ID,
+    CNCL_PRIMARYUOM,
+    L1UOM,
+    SDKIT,
+    SDMCU,
+    SDAN8_NK,
+    SDSHAN_NK,
+    KIT_VOLUME,
+    SDCARS_NK,
+    SEC_UOM,
+    CAPACITY_FEE,
+    F_CAPACITY_FEE
+FROM [lib://DataFiles/F_CLSD_KIT_SALES.qvd]
+(qvd);
+
+[DYSTRYBUCJA_WAZONA]:
+LOAD
+	[DATE.Month],
+	[#DYST_WYB],
+	[#DYST_BAL]
+ FROM [lib://DataFiles/DYSTRYBUCJA_WAZONA.qvd]
+(qvd);
+LOAD
+    __MpkID,
+    "MPK.Cost Center Company",
+    "MPK.Cost Center",
+    "MPK.Cost Center Descripton"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Mpk.qvd]
+(qvd);
+
+LOAD
+    __Master,
+    __MasterItem,
+    __MasterDate,
+    __MasterPayer,
+    __ItemID,
+    __BgtItemID,
+    __ItemIDWyrobyGotowe_ClosedSales,
+    __SoldToID,
+    __BgtSoldToID,
+    __ShipToID,
+    __DateID,
+    __YearMonthID,
+    __MpkID,
+    F_CLSD_SALES.ITEMID,
+    F_CLSD_SALES.KITID,
+    F_CLSD_SALES.SOLDTOID,
+    F_CLSD_SALES.SHIPTOID,
+    "CLSD.Shipment Date [closed sales]",
+    F_CLSD_SALES.GLDATEID,
+    F_CLSD_SALES.APPDATEID,
+    "CLSD.Order Company Number",
+    "CLSD.Order Document Type",
+    "CLSD.Order Document Number",
+    "CLSD.Order Document Line ID",
+    "CLSD.Invoice Company Number",
+    "CLSD.Invoice Document Type",
+    "CLSD.Invoice Document Number",
+    "CLSD.Invoice Sent Via EDI",
+    F_CLSD_SALES.STATUS,
+    #CLSD.Excise,
+    "#CLSD.Gross Sales Revenue With Excise",
+    "#CLSD.Rabat ON",
+    "#CLSD.Rabat PROMO",
+    "#CLSD.Rabat CASH",
+    "#CLSD.Net Sales Revenue",
+    "#CLSD.Rabat OFF",
+    "#CLSD.Net Net Sales Revenue",
+    "CLSD.Currency Code",
+    F_CLSD_SALES.F_EXCISE,
+    F_CLSD_SALES.F_BASEPRICE,
+    F_CLSD_SALES.F_RABATON,
+    F_CLSD_SALES.F_RABATPROMO,
+    F_CLSD_SALES.F_RABATCASH,
+    F_CLSD_SALES.F_NETPRICE,
+    F_CLSD_SALES.F_RABATOFF,
+    F_CLSD_SALES.F_NETNETPRICE,
+    "#CLSD.Primary UOM",
+    "#CLSD.Secondary UOM",
+    "#CLSD.Shipping UOM",
+    "#CLSD.Production UOM",
+    "#CLSD.Weight UOM",
+    "#CLSD.Volume UOM",
+    "#CLSD.L1 UOM",
+    "CLSD.Is History",
+    "CLSD.Order Taken By EDI",
+    "CLSD.Transaction Order Date [closed sales]",
+    "CLSD.Customer Purchase Order Number",
+    "CLSD.Customer Purchase Order Number Cont.",
+    F_CLSD_SALES.CNCL_PRIMARYUOM,
+    F_CLSD_SALES.CNCL_SECONDARYUOM,
+    F_CLSD_SALES.CNCL_SHIPPINGUOM,
+    F_CLSD_SALES.CNCL_PRODUCTIONUOM,
+    F_CLSD_SALES.CNCL_WEIGHTUOM,
+    F_CLSD_SALES.CNCL_VOLUMEUOM,
+    F_CLSD_SALES.CNCL_L1UOM,
+    "CLSD.Short Item ID",
+    "CLSD.Requested Date [closed sales]",
+    F_CLSD_SALES.BGT_ITEM_ID,
+    CLSD.Warehouse,
+    "CLSD.Kit Short Number",
+    "CLSD.Sold To Address Number",
+    "CLSD.Ship To Address Number",
+    "CLSD.Budget Short Item ID",
+    F_CLSD_SALES.BG_SDAN8,
+    F_CLSD_SALES.SD_ITEM,
+    F_CLSD_SALES.SDCARS_NK,
+    F_CLSD_SALES.USERID,
+    F_CLSD_SALES.TRANSACTIONORIGINATOR,
+    F_CLSD_SALES.DELIVERYNUMBER,
+    F_CLSD_SALES.RABAT_DD,
+    F_CLSD_SALES.SDPDDJ,
+    "#CLSD.Capacity Fee",
+    F_CLSD_SALES.F_CAPACITY_FEE,
+    F_CLSD_SALES.SDLOTN,
+    "CLSD.Order Document Number1",
+    "CLSD.Order Document Line ID1",
+    "CLSD.Invoice Document Number1",
+    "CLSD.Requested Date1",
+    F_CLSD_SALES.PROMO_ON_INVOICE
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Closed.qvd]
+(qvd);
+
+LOAD
+    __SalesSoldToID,
+    "CUST.Sold To Address Number",
+    CUST.Payer,
+    "CUST.Customer City PL",
+    "CUST.Payer cont.",
+    "CUST.Customer City",
+    "CUST.Customer KAM",
+    "CUST.Customer Region",
+    "CUST.Payer GS",
+    D_SALES_AB.CATEGORY13,
+    D_SALES_AB.CATEGORY14,
+    CUST.KeyAccountManagerAB
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Cust - Copy.qvd]
+(qvd);
+
+LOAD
+    __SalesSoldToID,
+    "CUST.Sold To Address Number",
+    CUST.Payer,
+    "CUST.Customer City PL",
+    "CUST.Payer cont.",
+    "CUST.Customer City",
+    "CUST.Customer KAM",
+    "CUST.Customer Region",
+    "CUST.Payer GS",
+    D_SALES_AB.CATEGORY13,
+    D_SALES_AB.CATEGORY14,
+    CUST.KeyAccountManagerAB
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Cust.qvd]
+(qvd);
+
+LOAD
+    __SalesBgtItemID,
+    D_SALES_ITM.ITEM_ID,
+    "CUST.Short Item ID",
+    D_SALES_ITM.LNGITEMID,
+    D_SALES_ITM.SEGMENT1,
+    D_SALES_ITM.SEGMENT2,
+    D_SALES_ITM.SEGMENT3,
+    D_SALES_ITM.SEGMENT4,
+    D_SALES_ITM.SEGMENT5,
+    D_SALES_ITM.SEGMENT6,
+    D_SALES_ITM.SEGMENT7,
+    "ITEM.Brand Group",
+    "ITEM.Daily SKU Group",
+    "ITEM.Sales Brand Details",
+    "ITEM.Sales SKU",
+    D_SALES_ITM.CATEGORY5,
+    "ITEM.Import/Local/Export",
+    "ITEM.Daily Brand MxM",
+    "ITEM.Daily Brand PRP",
+    "ITEM.KAM Estimation Brand",
+    "ITEM.SKU STD/PROM",
+    "ITEM.SKU Mobile Brand Number",
+    D_SALES_ITM.CATEGORY13,
+    ITEM.Pillar,
+    "ITEM.Brand By OLD SKU",
+    "ITEM.Brand Sub Group",
+    D_SALES_ITM.CATEGORY17,
+    "ITEM.Brand Mobile Point",
+    D_SALES_ITM.CATEGORY19,
+    D_SALES_ITM.CATEGORY20,
+    D_SALES_ITM.CATEGORY21,
+    D_SALES_ITM.LOADDATE,
+    D_SALES_ITM.ISHISTORY,
+    D_SALES_ITM.ITEMDESCRIPTION,
+    D_SALES_ITM.ITEMDESCRIPTION2,
+    D_SALES_ITM.IMPRP3,
+    D_SALES_ITM.C_PURCHASREPORTINGCODE02,
+    D_SALES_ITM.ISCURRENT,
+    D_SALES_ITM.CATEGORY22
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Item Bgt.qvd]
+(qvd);
+
+LOAD
+    __SalesItemID,
+    D_SALES_ITM.ITEM_ID,
+    "CUST.Short Item ID",
+    D_SALES_ITM.LNGITEMID,
+    D_SALES_ITM.SEGMENT1,
+    D_SALES_ITM.SEGMENT2,
+    D_SALES_ITM.SEGMENT3,
+    D_SALES_ITM.SEGMENT4,
+    D_SALES_ITM.SEGMENT5,
+    D_SALES_ITM.SEGMENT6,
+    D_SALES_ITM.SEGMENT7,
+    "ITEM.Brand Group",
+    "ITEM.Daily SKU Group",
+    "ITEM.Sales Brand Details",
+    "ITEM.Sales SKU",
+    D_SALES_ITM.CATEGORY5,
+    "ITEM.Import/Local/Export",
+    "ITEM.Daily Brand MxM",
+    "ITEM.Daily Brand PRP",
+    "ITEM.KAM Estimation Brand",
+    "ITEM.SKU STD/PROM",
+    "ITEM.SKU Mobile Brand Number",
+    D_SALES_ITM.CATEGORY13,
+    ITEM.Pillar,
+    "ITEM.Brand By OLD SKU",
+    "ITEM.Brand Sub Group",
+    D_SALES_ITM.CATEGORY17,
+    "ITEM.Brand Mobile Point",
+    D_SALES_ITM.CATEGORY19,
+    D_SALES_ITM.CATEGORY20,
+    D_SALES_ITM.CATEGORY21,
+    D_SALES_ITM.LOADDATE,
+    D_SALES_ITM.ISHISTORY,
+    D_SALES_ITM.ITEMDESCRIPTION,
+    D_SALES_ITM.ITEMDESCRIPTION2,
+    D_SALES_ITM.IMPRP3,
+    D_SALES_ITM.C_PURCHASREPORTINGCODE02,
+    D_SALES_ITM.ISCURRENT,
+    D_SALES_ITM.CATEGORY22
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Item.qvd]
+(qvd);
+
+LOAD
+    __SalesSoldToID,
+    "CONC.Address Number",
+    "CONC.Wine Effective Date",
+    "CONC.Wine Expiration Date",
+    "CONC.Wine Concession Status",
+    "CONC.Spirits Effective Date",
+    "CONC.Spirits Expiration Date",
+    "CONC.Spirits Concession Status"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Koncesje.qvd]
+(qvd);
+
+LOAD
+    __Master,
+    __MasterItem,
+    __MasterDate,
+    __MasterPayer,
+    __ItemID,
+    __BgtItemID,
+    __ItemIDWyrobyGotowe_OpenSales,
+    __SoldToID,
+    __BgtSoldToID,
+    __ShipToID,
+    __DateID,
+    __YearMonthID,
+    __MpkID,
+    F_OPN_SALES.LINEID,
+    F_OPN_SALES.ITEMID,
+    F_OPN_SALES.KITID,
+    F_OPN_SALES.SOLDTOID,
+    F_OPN_SALES.SHIPTOID,
+    "OPN.Requested Date",
+    "OPN.Order Company Number",
+    "OPN.Order Document Type",
+    "OPN.Order Document Number",
+    "OPN.Order Document Line ID",
+    "OPN.Invoice Number",
+    "OPN.Invoice  Document Type",
+    "OPN.Invoice  Document Number",
+    F_OPN_SALES.INVSENDBYEDI,
+    OPN.Status,
+    #OPN.Excise,
+    "#OPN.Gross Sales Revenue With Excise",
+    "#OPN.Rabat ON",
+    "#OPN.Rabat Promo",
+    "#OPN.Rabat Cash",
+    "#OPN.Net Sales Revenue",
+    "#OPN.Rabat OFF",
+    "#OPN.Net Net Sales Revenue",
+    F_OPN_SALES.SDCRCD,
+    F_OPN_SALES.F_EXCISE,
+    F_OPN_SALES.F_BASEPRICE,
+    F_OPN_SALES.F_RABATON,
+    F_OPN_SALES.F_RABATPROMO,
+    F_OPN_SALES.F_RABATCASH,
+    F_OPN_SALES.F_NETPRICE,
+    F_OPN_SALES.F_RABATOFF,
+    F_OPN_SALES.F_NETNETPRICE,
+    "#OPN.Primary UOM",
+    "#OPN.Secondary UOM",
+    "#OPN.Shipping UOM",
+    "#OPN.Production UOM",
+    "#OPN.Weight UOM",
+    "#OPN.Volume UOM",
+    "#OPN.L1 UOM",
+    F_OPN_SALES.TKNVIAEDI,
+    F_OPN_SALES.SDNXTR,
+    F_OPN_SALES.SDLTTR,
+    F_OPN_SALES.ORDER_DATE_ID,
+    "OPN.Customer Purchase Order Number",
+    "OPN.Customer Purchase Order  Number Cont.",
+    "OPN.Short Item ID",
+    F_OPN_SALES.BDGT_ITEM,
+    OPN.Warehouse,
+    "OPN.Kit Short Number",
+    "OPN.Sold To Address Number",
+    "OPN.Ship To Address Number",
+    "OPN.Budget Short Item ID",
+    F_OPN_SALES.BG_SDAN8,
+    "OPN.Promised Shipment date",
+    F_OPN_SALES.CAPACITY_FEE,
+    F_OPN_SALES.F_CAPACITY_FEE
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Open.qvd]
+(qvd);
+
+LOAD
+    __SoldToID,
+    __BgtSoldToID,
+    __ShipToID,
+    D_SOLD_TO.SOLDTOID,
+    "Address Number",
+    "Name Of Customer",
+    D_SOLD_TO.NAMEALPHA,
+    "Mailing Name",
+    D_SOLD_TO.MAILINGNAME,
+    Street,
+    D_SOLD_TO.ADDRESSLINE1,
+    "Street (Continued)",
+    D_SOLD_TO.ADDRESSLINE2,
+    D_SOLD_TO.C_ADDRESSLINE3,
+    D_SOLD_TO.ADDRESSLINE3,
+    D_SOLD_TO.C_ADDRESSLINE4,
+    D_SOLD_TO.ADDRESSLINE4,
+    City,
+    D_SOLD_TO.CITY,
+    State,
+    D_SOLD_TO.STATE,
+    "Country Code",
+    D_SOLD_TO.COUNTRY,
+    "Postal Code",
+    D_SOLD_TO.POSTALCODE,
+    "Tax Number ID",
+    D_SOLD_TO.ABAC01,
+    D_SOLD_TO.C_CATEGORYCODE01,
+    D_SOLD_TO.CATEGORYCODE01,
+    D_SOLD_TO.ABAC02,
+    "AB Cat. Code 2",
+    D_SOLD_TO.CATEGORYCODE02,
+    "Customer Category [ABAC03]",
+    "Customer Category",
+    D_SOLD_TO.CATEGORYCODE03,
+    D_SOLD_TO.ABAC04,
+    D_SOLD_TO.C_CATEGORYCODE04,
+    D_SOLD_TO.CATEGORYCODE04,
+    D_SOLD_TO.ABAC05,
+    "AB Cat. Code 5",
+    D_SOLD_TO.CATEGORYCODE05,
+    "Direction [ABAC06]",
+    "Market Code",
+    D_SOLD_TO.CATEGORYCODE06,
+    D_SOLD_TO.ABAC07,
+    D_SOLD_TO.C_CATEGORYCODE07,
+    D_SOLD_TO.CATEGORYCODE07,
+    D_SOLD_TO.ABAC08,
+    "Group/Non Group",
+    D_SOLD_TO.CATEGORYCODE08,
+    D_SOLD_TO.ABAC09,
+    "Customer Type",
+    D_SOLD_TO.CATEGORYCODE09,
+    D_SOLD_TO.ABAC10,
+    "Domestic/Export",
+    D_SOLD_TO.CATEGORYCODE10,
+    D_SOLD_TO.ABAC11,
+    D_SOLD_TO.C_CATEGORYCODE11,
+    D_SOLD_TO.CATEGORYCODE11,
+    D_SOLD_TO.ABAC12,
+    "Sales Region",
+    D_SOLD_TO.CATEGORYCODE12,
+    D_SOLD_TO.ABAC13,
+    D_SOLD_TO.C_CATEGORYCODE13,
+    D_SOLD_TO.CATEGORYCODE13,
+    D_SOLD_TO.ABAC14,
+    D_SOLD_TO.C_CATEGORYCODE14,
+    D_SOLD_TO.CATEGORYCODE14,
+    D_SOLD_TO.ABAC15,
+    D_SOLD_TO.C_CATEGORYCODE15,
+    D_SOLD_TO.CATEGORYCODE15,
+    D_SOLD_TO.ABAC16,
+    "Domestic/Travel Retail",
+    D_SOLD_TO.CATEGORYCODE16,
+    D_SOLD_TO.ABAC17,
+    "Customer Group",
+    D_SOLD_TO.CATEGORYCODE17,
+    D_SOLD_TO.ABAC18,
+    "Customer group PNL",
+    D_SOLD_TO.CATEGORYCODE18,
+    D_SOLD_TO.ABAC19,
+    "Key Account Manager",
+    D_SOLD_TO.CATEGORYCODE19,
+    D_SOLD_TO.ABAC20,
+    D_SOLD_TO.C_CATEGORYCODE20,
+    D_SOLD_TO.CATEGORYCODE20,
+    D_SOLD_TO.ABAC21,
+    D_SOLD_TO.C_CATEGORYCODE21,
+    D_SOLD_TO.CATEGORYCODE21,
+    D_SOLD_TO.ABAC22,
+    D_SOLD_TO.C_CATEGORYCODE22,
+    D_SOLD_TO.CATEGORYCODE22,
+    D_SOLD_TO.ABAC23,
+    D_SOLD_TO.C_CATEGORYCODE23,
+    D_SOLD_TO.CATEGORYCODE23,
+    D_SOLD_TO.ABAC24,
+    Markets,
+    D_SOLD_TO.CATEGORYCODE24,
+    D_SOLD_TO.ABAC25,
+    ICP,
+    D_SOLD_TO.CATEGORYCODE25,
+    D_SOLD_TO.ABAC26,
+    "Distribution Channel",
+    D_SOLD_TO.CATEGORYCODE26,
+    D_SOLD_TO.ABAC27,
+    V_Market,
+    D_SOLD_TO.CATEGORYCODE27,
+    D_SOLD_TO.ABAC28,
+    V_ICP,
+    D_SOLD_TO.CATEGORYCODE28,
+    "Concession Type",
+    "Concession Type Desc.",
+    D_SOLD_TO.CATEGORYCODE29,
+    D_SOLD_TO.ABAC30,
+    D_SOLD_TO.C_CATEGORYCODE30,
+    D_SOLD_TO.CATEGORYCODE30,
+    D_SOLD_TO.VALIDFROM,
+    D_SOLD_TO.VALIDTO,
+    D_SOLD_TO.ISCURRENT,
+    D_SOLD_TO.ISHISTORY,
+    "Minimal Value Order",
+    "Country Desc",
+    D_SOLD_TO.COUNTRY_DESC,
+    D_SOLD_TO.ABSIC,
+    "Search Type",
+    D_SOLD_TO.CLASSIFICATIONCODE02,
+    D_SOLD_TO.ASN,
+    D_SOLD_TO.CLASSIFICATIONCODE04,
+    "Payment Terms - A/R",
+    D_SOLD_TO.CUSTOMERGROUP,
+    D_SOLD_TO.CUSTOMERGROUPDESC,
+    D_SOLD_TO.PAYER,
+    D_SOLD_TO.ABATPR
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Customers.qvd]
+(qvd);
+
+LOAD
+    __ItemID,
+    __BgtItemID,
+    D_ITEM.ITEMID,
+    "Short Item ID",
+    "Long Item ID",
+    "Item Description",
+    "Item Description Continued",
+    "Item Template",
+    "Standard Cost",
+    "EAN Code",
+    "Country Item",
+    D_ITEM.IMSRP0,
+    "GUS Code",
+    D_ITEM.SALESREPORTINGCODE00,
+    D_ITEM.IMSRP1,
+    "Family Code",
+    D_ITEM.SALESREPORTINGCODE01,
+    D_ITEM.IMSRP2,
+    "Category Code",
+    D_ITEM.SALESREPORTINGCODE02,
+    D_ITEM.IMSRP3,
+    "Sub Category Code",
+    D_ITEM.SALESREPORTINGCODE03,
+    D_ITEM.IMSRP4,
+    "Controlling Brand Code",
+    D_ITEM.SALESREPORTINGCODE04,
+    D_ITEM.IMSRP5,
+    Capacity,
+    D_ITEM.SALESREPORTINGCODE05,
+    "Domestic/Imported Code",
+    "Domestic/Imported Description",
+    D_ITEM.SALESREPORTINGCODE06,
+    D_ITEM.IMSRP7,
+    "Brand Owner",
+    D_ITEM.SALESREPORTINGCODE07,
+    D_ITEM.IMSRP8,
+    "Promotion/Standard Sales",
+    D_ITEM.SALESREPORTINGCODE08,
+    "Proof (SRP9)",
+    Proof,
+    D_ITEM.SALESREPORTINGCODE09,
+    D_ITEM.IMPRP0,
+    D_ITEM.C_PURCHASREPORTINGCODE00,
+    D_ITEM.PURCHASREPORTINGCODE00,
+    PRP1,
+    "Extended Description",
+    D_ITEM.PURCHASREPORTINGCODE01,
+    D_ITEM.IMPRP2,
+    "Sales Brand",
+    D_ITEM.PURCHASREPORTINGCODE02,
+    "Brand (IMPRP3)",
+    Brand,
+    D_ITEM.PURCHASREPORTINGCODE03,
+    D_ITEM.IMPRP4,
+    "Marketing Brand Code",
+    D_ITEM.PURCHASREPORTINGCODE04,
+    D_ITEM.IMPRP5,
+    D_ITEM.C_PURCHASREPORTINGCODE05,
+    D_ITEM.PURCHASREPORTINGCODE05,
+    D_ITEM.IMPRP6,
+    "Bottles In Case",
+    D_ITEM.PURCHASREPORTINGCODE06,
+    D_ITEM.IMPRP7,
+    "Type Of Packing",
+    D_ITEM.PURCHASREPORTINGCODE07,
+    D_ITEM.IMPRP8,
+    D_ITEM.C_PURCHASREPORTINGCODE08,
+    D_ITEM.PURCHASREPORTINGCODE08,
+    D_ITEM.IMPRP9,
+    D_ITEM.C_PURCHASREPORTINGCODE09,
+    D_ITEM.PURCHASREPORTINGCODE09,
+    "Index Type",
+    D_ITEM.ITEMSEGMENT02,
+    Characteristic,
+    Volume,
+    "Country Segment",
+    Promotion,
+    "Next Number",
+    "Stocking Type",
+    "Primary Unit Of Measure",
+    "Secondary Unit Of Measure",
+    "Purchasing Unit Of Measure",
+    "Pricing Unit Of Measure",
+    "Shipping Unit Of Measure",
+    "Production Unit Of Measure",
+    D_ITEM.IMUOM9,
+    "Component Unit Of Measure",
+    "Volume Unit Of Measure",
+    D_ITEM.VALIDFROM,
+    D_ITEM.VALIDTO,
+    "Is Current",
+    D_ITEM.ISHISTORY,
+    "GL Class",
+    D_ITEM.VOLUME,
+    "Pieces Per Cartoon",
+    "Pieces Per Palette",
+    "Litres Per Pieces",
+    D_ITEM.C01_CODE,
+    D_ITEM.C01_CODE_DESC,
+    D_ITEM.C02_CODE,
+    D_ITEM.C02_CODE_DESC,
+    D_ITEM.C03_CODE,
+    D_ITEM.C03_CODE_DESC,
+    D_ITEM.C04_CODE,
+    D_ITEM.C04_CODE_DESC,
+    D_ITEM.C05_CODE,
+    D_ITEM.C05_CODE_DESC,
+    D_ITEM.C06_CODE,
+    D_ITEM.C06_CODE_DESC,
+    D_ITEM.C07_CODE,
+    D_ITEM.C07_CODE_DESC,
+    D_ITEM.C08_CODE,
+    D_ITEM.C08_CODE_DESC,
+    "Volume Prisma Code",
+    "Volume Prisma Code Desc",
+    "P&L Prisma Code",
+    "P&L Prisma Code Desc",
+    "CN Number",
+    "CN Code",
+    "Shipping Code",
+    "Shipping Code Description 1",
+    "Shipping Code Description 2",
+    "Weight GR",
+    D_ITEM.WEIGHT_OF_KR,
+    "Country Item Desc",
+    "Weight GT",
+    "PC Brand Quality Code",
+    "PC Brand Quality Code Desc",
+    "PC Brand Code",
+    "PC Brand Code Desc",
+    "PC Brand Quality Size Code",
+    "PC Brand Quality Size Code Desc",
+    "Anaplan SKU"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Items.qvd]
+(qvd);
+
+LOAD
+    __Master,
+    __MasterItem,
+    __MasterDate,
+    __MasterPayer,
+    __ItemID,
+    __BgtItemID,
+    __ItemIDWyrobyGotowe_ActualPNL,
+    __SoldToID,
+    __BgtSoldToID,
+    __ShipToID,
+    __DateID,
+    __YearMonthID,
+    __MpkID,
+    "#ACT.[R031] Actual COG Non S/T Brands",
+    "#ACT.[R032] Actual COG S/T Brands",
+    "#ACT.[R041] Actual Production Cost",
+    "#ACT.[RT08_ST] ST  Brand Owner Invest.",
+    F_PL_V2_PL_MAIN.SDDGL,
+    F_PL_V2_PL_MAIN.SDAN8,
+    F_PL_V2_PL_MAIN.SDKCOO,
+    F_PL_V2_PL_MAIN.SDITM,
+    F_PL_V2_PL_MAIN.MCU,
+    "#ACT.Actual Volumes (LITRES)",
+    "#ACT.[R022] Actual Excise",
+    "#ACT.[R022] Actual Capacity Fee",
+    "#ACT.[R021] Actual Gross Sales Excl. T&D",
+    "#ACT.[R022] Actual CASH Rebate",
+    "#ACT.[R022] Actual ON Rebate",
+    "#ACT.[R022] Actual PROMO Rebate",
+    "#ACT.[R022] Actual PROMO Standard Rebate",
+    "#ACT.[R022] Actual PROMO DeepDive Rebate",
+    "#ACT.[R022] Actual OFF Rebate",
+    "#ACT.[R022] Actual OFF Promo Rebate",
+    "#ACT.[R022] Actual OFF Promo Rebate STD",
+    "#ACT.[R022] Actual Allowances & Discounts",
+    "#ACT.[R023_BC] Services Paid To Distributros BC",
+    "#ACT.[R023_BC] Services Paid To Distributors Provision",
+    "#ACT.[R023_BC] Services Paid To Distributors FA",
+    "#ACT.[R023] Actual Services Paid to Distributors",
+    "#ACT.[R024 ] Actual Services Rendered",
+    "#ACT.[RT02] Actual Net Sales Excl. T&D",
+    "#ACT.[R031_STD] COG Non S/T Brands Standard",
+    "#ACT.[R031_VAR] COG Non S/T Brands Variance",
+    "#ACT.[R031_WX] COG Non S/T Brands WX Documents",
+    "#ACT.[R032_STD] COG S/T Brands Standard",
+    "#ACT.[R032_VAR] COG S/T Brands Variance",
+    "#ACT.[R032_ST] Actual Standard Cost S/T",
+    "#ACT.[RT20] Actual Brand Owner Margin",
+    "#ACT.[R041_STD] Production Costs Standard",
+    "#ACT.[R041_VAR] Production Costs Variance",
+    "#ACT.[R042] Actual Handling Costs",
+    "#ACT.[R061_STD] Distrybution Costs Standard",
+    "#ACT.[R061_VAR] Distribution Costs Variance",
+    "#ACT.[R061] Actual Distribution Costs",
+    "#ACT.[R031_ST] Actual COG Cost S/T",
+    "#ACT.[R041_ST] Actual Production Cost S/T",
+    "#ACT.[R061_ST] Actual Distribution Cost S/T",
+    "#ACT.[R031_V] Actual COG Variance",
+    "#ACT.[R041_V] Actual Production Variance",
+    "#ACT.[R061_V] Actual Distribution Variance",
+    "#ACT.[R043] Actual Manufacturing Variance",
+    "#ACT.[RT04_ST] Actual Total Cost S/T",
+    "#ACT.[RT04] Actual Total Cost Of Sales",
+    "#ACT.[RT05_ST] Actual Gross Margin S/T",
+    "#ACT.[RT05] Actual Gross Margin",
+    "#ACT.[RT06_ST] Actual Contributive Margin S/T",
+    "#ACT.[RT06] Actual Contributive Margin",
+    "#ACT.[R071] Actual Media Expenses",
+    "#ACT.[R071] Media A&P Expenses BC Provision",
+    "#ACT.[R071] Mediar A&P Expenses BC",
+    "#ACT.[R072] Other Consumer A&P Expenses BC",
+    "#ACT.[R072] Other Consumer A&P Expenses BC Provision",
+    "#ACT.[R072] Other Consumer A&P Expenses Fixed Assets",
+    "#ACT.[R072] Other Consumer A&P X Components",
+    "#ACT.[R072] Actual Other Consumer A&P Expenses",
+    "#ACT.[R073] Trade A&P Expenses BC",
+    "#ACT.[R073] Trade A&P Expenses BC Provision",
+    "#ACT.[R073] Trade A&P Expenses Fixed Assets",
+    "#ACT.[R073] Actual Trade A&P Expenses",
+    "#ACT.[R074] Media A&P Expenses BC",
+    "#ACT.[R074] Media A&P Expenses BC Provision",
+    "#ACT.[R074] Media A&P Expenses BC Fixed Assets",
+    "#ACT.[R074] Media A&P Expenses",
+    "#ACT.[R075] Content A&P Expenses BC",
+    "#ACT.[R075] Content  A&P Expenses BC Provision",
+    "#ACT.[R075] Content A&P Expenses BC Fixed Assets",
+    "#ACT.[R075] Content A&P Expenses",
+    "#ACT.[R076] Visibility A&P Expenses BC",
+    "#ACT.[R076] Visibility A&P Expenses BC Provision",
+    "#ACT.[R076] Visibility A&P Expenses BC Fixed Assets",
+    "#ACT.[R076] Visibility A&P Expenses",
+    "#ACT.[R077] Activation A&P Expenses BC",
+    "#ACT.[R077] Activation A&P Expenses BC Provision",
+    "#ACT.[R077] Activation A&P Expenses BC Fixed Assets",
+    "#ACT.[R077] Activation A&P Expenses",
+    "#ACT.[R077AP] Sponsoring & Education",
+    "#ACT.[R078] Support A&P Expenses BC",
+    "#ACT.[R078] Support A&P Expenses BC Provision",
+    "#ACT.[R078] Support A&P Expenses BC Fixed Assets",
+    "#ACT.[R078] Support A&P Expenses",
+    "#ACT.[RT07] Actual Total A&P Expenses",
+    "#ACT.[R081] Local Brand Owner Invest.",
+    "#ACT.[R082] ST Brand Owner Invest.",
+    "#ACT.[RT08] Local Brand Onwer Invest",
+    F_PL_V2_PL_MAIN.RT08_BOI_ST,
+    "#ACT.[RT09] Actual CAAP S/T",
+    "#ACT.[RT09] Actual CAAP",
+    "#ACT.[R044] Actual Import Duties",
+    "#ACT.[R032_WX] COG S/T Brands WX Documents",
+    F_PL_V2_PL_MAIN.ISHISTORY,
+    "#ACT.[ER01] Actual Exchange Rate Differences",
+    "#ACT.[R072] Sponsoring & Education",
+    F_PL_V2_PL_MAIN.BGT_ITEM_ID,
+    "#ACT.R032 COG DW",
+    "#ACT.R032 COG BO",
+    "#ACT.[R073AP] Actual Sponsoring & Education",
+    "#ACT.[R031_WET] COG Non S/T Variance Wet",
+    "#ACT.[R031_DRY] COG Non S/T Variance Dry",
+    #ACT.R031_Cog_Mv_Amount,
+    F_PL_V2_PL_MAIN.PINGPONG_AN8,
+    F_PL_V2_PL_MAIN.SDAN8_NK,
+    F_PL_V2_PL_MAIN.BG_SDAN8_NK,
+    F_PL_V2_PL_MAIN.SDITM_NK,
+    F_PL_V2_PL_MAIN.BG_SDITM_NK,
+    F_PL_V2_PL_MAIN.MCU_NK,
+    F_PL_V2_PL_MAIN.PINGPONG_AN8_NK,
+    F_PL_V2_PL_MAIN.LINK,
+    "#ACT.[R042_EX] Actual Handling Costs Export",
+    "#ACT.[R042_EX_STD] Actual Handling Costs Export STD",
+    "#ACT.[R042_EX_VAR] Actual Handling Costs Export VAR",
+    "#ACT.[R061_EX] Actual Distribution Costs Export",
+    "#ACT.[R061_EX_STD] Actual Distribution Costs Export STD",
+    "#ACT.[R061_EX_VAR] Actual Distribution Costs Export VAR",
+    "#ACT.[R71011] Media - TV",
+    "#ACT.[R71012] Media - OOH",
+    "#ACT.[R71013] Media - Print & Advertorial",
+    "#ACT.[R71014] Media - Other traditional media",
+    "#ACT.[R71021] Media - Paid Social Media",
+    "#ACT.[R71022] Media - Digital Display & Video",
+    "#ACT.[R71023] Media - Paid Search",
+    "#ACT.[R71024] Media - Influencers",
+    "#ACT.[R71025] Media - Other digital media",
+    "#ACT.[R7103] Media - Agency fees",
+    "#ACT.[R7104] Media - Sponsorship & Partnership",
+    "#ACT.[R72011] Creation - Agency fees",
+    "#ACT.[R72012] Creation - Marketing Content & Asset Dev",
+    "#ACT.[R72013] Creation - Visibility_POS Development",
+    "#ACT.[R72014] Creation - Owned media Development",
+    "#ACT.[R72015] Creation - Talent Sponsorship & Influencers",
+    "#ACT.[R72021] Creation - Creative Agency fees",
+    "#ACT.[R72022] Creation - Product Development",
+    "#ACT.[R72023] Creation - Consumer research",
+    "#ACT.[R72024] Creation - VAP_Limited Edit Development",
+    "#ACT.[R73011] L3F - Sampling On-trade",
+    "#ACT.[R73012] L3F - Activation On-trade",
+    "#ACT.[R73013] L3F - Visibility POS On-trade",
+    "#ACT.[R73014] L3F - VAP /Limit Edit On-trade",
+    "#ACT.[R73021] L3F - Sampling Off-trade",
+    "#ACT.[R73022] L3F - Activation Off-trade",
+    "#ACT.[R73023] L3F - Visibility POS Off-trade",
+    "#ACT.[R73024] L3F - VAP / LimitedE Off-trade",
+    "#ACT.[R7303] L3F - Agency & Warehousing fees",
+    "#ACT.[R7304] L3F - ECOM - Owned and 3rd party",
+    "#ACT.[R7401] Experience - Experiential and PR Agency fees",
+    "#ACT.[R7402] Experience - Brand Events",
+    "#ACT.[R7403] Experience - Ambassadors_Advovacy",
+    "#ACT.[R7404] Experience - CRM",
+    "#ACT.[R7405] Experience - Brand Home",
+    "#ACT.[R7406] Experience - Other experience",
+    "#ACT.[R7501] Support - Marketing Strategy",
+    "#ACT.[R7502] Support - Consumer research",
+    "#ACT.[R7503] Support - Data analytics and other research",
+    "#ACT.[R7504] Support - Internal activities",
+    "#ACT.[R7505] Support - Other",
+    "#ACT.[R76011] Trade - Merchandising On-trade",
+    "#ACT.[R76012] Trade - Customer_Incentives and Events On-trade",
+    "#ACT.[R76021] Trade -Merchandising Off-trade",
+    "#ACT.[R76022] Trade - Customer_Trade and Incentives and Events",
+    "#ACT.[R7603] Trade - Other",
+    F_PL_V2_PL_MAIN.R023_SRV_PD_DIST_GL_NEW,
+    "F_PL_V2_PL_MAIN.#ACT.[R022] Actual Net Sales Revenue",
+    "F_PL_V2_PL_MAIN.#ACT.Actual ISV",
+    "#ACT.[R022] Actual Gross Sales with Excise",
+    "#ACT.[R022] Actual Net Sales with Excise",
+    "#ACT.Actual Base Price",
+    "#ACT.Actual Total Cost Restated",
+    "F_PL_V2_PL_MAIN.#ACT.[R022] Actual OFF Promo Rebate STD",
+    "F_PL_V2_PL_MAIN.#ACT.[R022] Actual Promo Rebate STD",
+    "#ACT.Customer Total"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Actual PNL.qvd]
+(qvd);
+
+LOAD
+    __Master,
+    __MasterItem,
+    __MasterDate,
+    __MasterPayer,
+    __ItemID,
+    __BgtItemID,
+    __SoldToID,
+    __BgtSoldToID,
+    __ShipToID,
+    __DateID,
+    __YearMonthID,
+    __MpkID,
+    PL_TMP_T_BUDGET.ESTIMATION_DATE,
+    PL_TMP_T_BUDGET.EFFECTIVE_DATE,
+    PL_TMP_T_BUDGET.SOLD_TO_ID,
+    PL_TMP_T_BUDGET.ITEM_ID,
+    ".",
+    PL_TMP_T_BUDGET.MCU_ID,
+    "#BGT.Budget Volumen (LITRES)",
+    PL_TMP_T_BUDGET.EXCISE,
+    "#BGT.[R021] Budget Gross Sales Excl. T&D",
+    "#BGT.[R022] Budget ON Rebate",
+    "#BGT.[R022] Budget PROMO Rebate",
+    "#BGT.[R022] Budget CASH Rebate",
+    "#BGT.[R022] Budget OFF Rebate",
+    "#BGT.[R022] Budget Allowances & Discounts",
+    "#BGT.[R022] Excise Amount",
+    PL_TMP_T_BUDGET.R023_SRV_PD_TO_DIST_KEY_AMOUNT,
+    PL_TMP_T_BUDGET.R023_SRV_PD_TO_DIST_GRP_AMOUNT,
+    "#BGT.[R023] Budget Services Paid to Distributors",
+    "#BGT.[R024 ] Budget Services Rendered",
+    "#BGT.[RT02] Budget Net Sales Excl. T&D",
+    "#BGT.[R031] Budget COG Non S/T Brands",
+    "#BGT.[R032] Budget COG S/T Brands",
+    "#BGT.Budget Other COG",
+    "#BGT.Budget Total COG",
+    "#BGT.[R032_ST] Budget Standard Cost S/T",
+    "#BGT.[ER01] Budget Exchange Rate Differences",
+    "#BGT.Budget Total COG S/T",
+    "#BGT.[RT20] Budget Brand Owner Margin",
+    "#BGT.[R041] Budget Production Cost",
+    "#BGT.[R042] Budget Handling Costs",
+    "#BGT.[R044] Budget Import Duties",
+    "#BGT.[R061_VAR] Budget Distribution Costs Variance",
+    "#BGT.[R061_STD] Budget Distribution Costs Standard",
+    "#BGT.[R061] Budget Distribution Costs",
+    "#BGT.[R041_ST] Budget Production Cost S/T",
+    "#BGT.[R031_ST] Budget COG Cost S/T",
+    "#BGT.[R061_ST] Budget Distribution Cost S/T",
+    "#BGT.[R041_V] Budget Production Variance",
+    "#BGT.[R031_V] Budget COG Variance",
+    "#BGT.[R061_V] Budget Distribution Variance",
+    "#BGT.[R043] Budget Manufacturing Variance",
+    "#BGT.[RT04] Budget Total Cost Of Sales",
+    "#BGT.[RT04_ST] Budget Total Cost S/T",
+    "#BGT.[RT05] Budget Gross Margin",
+    "#BGT.[RT05_ST] Budget Gross Margin S/T",
+    "#BGT.[RT06_ST] BudgetContributive Margin S/T",
+    "#BGT.[RT06] Budget Contributive Margin",
+    "#BGT.[R071] Budget Media Expenses",
+    PL_TMP_T_BUDGET.R073_TRAD_AP_KEY_AMOUNT,
+    PL_TMP_T_BUDGET.R073_TRAD_AP_GRP_AMOUNT,
+    "#BGT.[R073] BudgetTrade A&P Expenses",
+    "#BGT.[R072] Budget Other Consumer A&P Expenses",
+    "#BGT.[RT07] Budget Total A&P Expenses",
+    "#BGT.Budget BOI on S/T Brands",
+    "#BGT.[RT08] Budget Brand Owner Invest. Total",
+    "#BGT.[RT09] Budget CAAP S/T",
+    "#BGT.[RT09] Budget CAAP",
+    "BGT.Estimation Code",
+    "#BGT.[R061_FD] Budget Fixed Distribution Costs",
+    "#BGT.[R061_VAR] Budget Trans Distriubution Costs",
+    "#BGT.[R061_VAR] Budget Warehouse Distribution Costs",
+    "#BGT.Budget Free Goods Volumen",
+    "#BGT.[R022] Budget OFF Promo Rebate",
+    PL_TMP_T_BUDGET.PINGPONG_AN8,
+    "#BGT.[R031] Budget COGs Wet Variance",
+    "#BGT.[R031] Budget COGs Dry Variance",
+    "#BGT.[R022] Budget OFF Promo Rebate STD",
+    "#BGT.[R022] Budget Promo Rebate STD",
+    ".Budget Rate",
+    "#BGT.[R031_STD] Budget COG Non S/T Brands Standard",
+    "#BGT.[R042_EX_STD] Budget Handling Costs Export STD",
+    "#BGT.[R042_EX_VAR] Budget Handling Costs Export VAR",
+    PL_TMP_T_BUDGET.A_R043M_MIX_VARIANCE,
+    "#BGT.[R061_EX_STD] Budget Distribution Costs Export STD",
+    "#BGT.[R061_EX] Budget Distribution Costs Export",
+    "#BGT.[R061_EX_VAR] Budget Distribution Costs Export VAR",
+    "#BGT.[R041S] Budget Production Costs",
+    "#BGT.[R074] Budget Media Expenses",
+    "#BGT.[R075] Budget Content Expenses",
+    "#BGT.[R076] Budget Visibility Expenses",
+    "#BGT.[R077] Budget Activation Expenses",
+    "#BGT.[R078] Budget Support Expenses",
+    PL_TMP_T_BUDGET.BgtYear,
+    PL_TMP_T_BUDGET.BgtLastYear,
+    PL_TMP_T_BUDGET.BgtCode,
+    PL_TMP_T_BUDGET.Estimation,
+    PL_TMP_T_BUDGET.Budget,
+    "#BGT.Budget Total Total Cost S/T",
+    "#BGT.Budget Total Total Cost S/T2",
+    "#BGT.Budget Base Price",
+    "#BGT.Budget ISV",
+    "#BGT.Customer Total"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1coB-YRECC3VlxdSPL44ZiGDuryGfwtr7/Sales Budget PNL.qvd]
+(qvd);
+
+LOAD
+    ACCNT_ID,
+    GMMCU,
+    MCU_DESCRIPTION,
+    MCU_TYPE,
+    MCRP029,
+    MCRP031,
+    GMOBJ,
+    GMSUB,
+    GL_ACCNT,
+    GMDL01,
+    LKDL01,
+    GMR027,
+    GMR027_DESC,
+    GMR028,
+    GMR028_DESC,
+    GMR029,
+    GMR029_DESC,
+    GMR030,
+    GMR030_DESC,
+    GMR032,
+    GMR032_DESC,
+    GMR033,
+    GMR033_DESC,
+    GMR034,
+    GMR035,
+    GMR035_DESC,
+    GMR036,
+    GMR036_DESC,
+    LV3_GL_ACCNT,
+    LV3_GMDL01,
+    LV3_LKDL01,
+    LV4_GL_ACCNT,
+    LV4_GMDL01,
+    LV4_LKDL01,
+    LV5_GL_ACCNT,
+    LV5_GMDL01,
+    LV5_LKDL01,
+    LV6_GL_ACCNT,
+    LV6_GMDL01,
+    LV6_LKDL01,
+    LV7_GL_ACCNT,
+    LV7_GMDL01,
+    LV7_LKDL01,
+    LV8_GL_ACCNT,
+    LV8_GMDL01,
+    LV8_LKDL01,
+    LV9_GL_ACCNT,
+    LV9_GMDL01,
+    LV9_LKDL01,
+    GMR025,
+    GMR025_DESC,
+    HISTORY,
+    GMR037,
+    GMR037_DESC,
+    MCU_DESCRIPTION_PL,
+    GMR031,
+    GMR031_DESC,
+    GMR039,
+    GMR039_DESC,
+    GMR025_SORTORDER,
+    GMR036_SORTORDER,
+    MCRP025,
+    GMR041,
+    GMR041_DESC,
+    GMR043,
+    GMR043_DESC,
+    MCRP043,
+    GMR042,
+    GMR042_DESC
+FROM [lib://DataFiles/D_BR_CHART_ACCNT.qvd]
+(qvd);
+
+LOAD
+    ESTIMATION_DATE,
+    ESTIMATION_CODE,
+    BUDGET_ITEM_ID,
+    MCU_ID,
+    SOLD_TO_ID,
+    ITEM_ID,
+    EFFECTIVE_DATE,
+    VL,
+    EXCISE,
+    R022_EXCISE_AMOUNT,
+    R021_GROSS_SLS_AMOUNT,
+    R022_REBATE_ON_AMOUNT,
+    R022_REBATE_PROMO_AMOUNT,
+    R022_REBATE_CASH_AMOUNT,
+    R022_REBATE_OFF_AMOUNT,
+    R022PF_OFF_PROMO_REB,
+    R022_AD_TOTAL,
+    R023_SRV_PD_TO_DIST_KEY_AMOUNT,
+    R023_SRV_PD_TO_DIST_GRP_AMOUNT,
+    R023_SRV_PAID_TO_DISTR,
+    R024_SRV_RENDERED,
+    RT02_NET_SALES,
+    R031_COG_NON_FINISHED_G,
+    R032_COG_ST_TRADE_G,
+    OTH_COG_GLAA,
+    TOTAL_COG,
+    R032_STANDARD_ST_COST,
+    E00_DIFF_EXCH_RATE,
+    TOTAL_COG_ST,
+    RT20_BRND_OWNR_MRG,
+    R041_PROD_COST,
+    R042_HNDL_COST,
+    R044_IMP_DUTIES,
+    R061_DISTR_COST_VAR_AMOUNT,
+    R061_DISTR_COST_STD_AMOUNT,
+    R061_DISTR_COST,
+    R041_ST_PROD_COST_ST,
+    R031_ST_COG_COST_ST,
+    R061_DISTR_COST_ST,
+    R041_V_PROD_VARIANCE,
+    R031_V_COG_VARIANCE,
+    R061_V_DISTR_VARIANCE,
+    R043_MAN_VARIANCE,
+    RT04_TOTAL_COST,
+    RT04_ST_TOTAL_COST,
+    RT05_GROSS_MRG,
+    RT05_ST_GROSS_MRG,
+    RT06_ST_CONTR_MRG,
+    RT06_CONTR_MRG,
+    R071_MEDIA_EXP,
+    R073_TRAD_AP_KEY_AMOUNT,
+    R073_TRAD_AP_GRP_AMOUNT,
+    R073_TRADE_AP,
+    R072_OTH_CONS_AP,
+    RT07_TOTAL_AP,
+    BOI_ST_GLAA,
+    RT08_OTH_BOI_GLAA,
+    RT09_ST_CAAP,
+    RT09_CAAP,
+    R061FD_FIXED_DIST_COST,
+    R061_VAR_TRANS_DIST_COSTS,
+    R061_VAR_WAREHOUSE_DIST_COSTS,
+    FREE_GOODS_VL,
+    PINGPONG_AN8,
+    R031_COG_WET_O_AMOUNT,
+    R031_COG_DRY_O_AMOUNT,
+    R022PS_OFF_PROMO_STD_REB,
+    R022S_PROMO_STD_REB,
+    "RATE",
+    R031_COG_NON_ST_STD,
+    R042_HNDLNG_STD_EXPORT,
+    R042_HNDL_O_EXPORT,
+    A_R043M_MIX_VARIANCE,
+    R061_DIST_STD_EX,
+    R061_DISTR_EXPORT,
+    R061_DIST_O_EX,
+    R041S_PROD_COSTS,
+    R074_MEDIA,
+    R075_CONTENT,
+    R076_VISIBILITY,
+    R077_ACTIVATION,
+    R078_SUPPORT
+FROM [lib://DataFiles/PL_SELLIN_BUDGET.qvd]
+(qvd);
+
+LOAD
+    ESTIMATION_CODE,
+    BUDGET_ITEM_ID,
+    MCU_ID,
+    BUDGET_POINT_BRAND,
+    NIELSEN_ITEM_NO,
+    NIELSEN_BRAND,
+    NIELSEN_SEGMENT,
+    NIELSEN_TYPE,
+    SOLD_TO_ID,
+    EFFECTIVE_DATE,
+    NEW_SALES_DATE,
+    VL,
+    R022_EXCISE_AMOUNT,
+    BUDGET_GROSS_SALES_INC_EXCISE,
+    R021_GROSS_SLS_AMOUNT,
+    R022_REBATE_ON_AMOUNT,
+    R022_REBATE_PROMO_AMOUNT,
+    R022_REBATE_CASH_AMOUNT,
+    BUDGET_NET_SALES_REVENUE,
+    R022_REBATE_OFF_AMOUNT,
+    BUDGET_NET_NET_SALES_REVENUE,
+    EXCISE,
+    R022PF_OFF_PROMO_REB,
+    R022_AD_TOTAL,
+    R023_SRV_PD_TO_DIST_KEY_AMOUNT,
+    R023_SRV_PD_TO_DIST_GRP_AMOUNT,
+    R023_SRV_PAID_TO_DISTR,
+    R024_SRV_RENDERED,
+    RT02_NET_SALES,
+    R031_COG_NON_FINISHED_G,
+    R032_COG_ST_TRADE_G,
+    OTH_COG_GLAA,
+    TOTAL_COG,
+    R032_STANDARD_ST_COST,
+    E00_DIFF_EXCH_RATE,
+    TOTAL_COG_ST,
+    RT20_BRND_OWNR_MRG,
+    R041_PROD_COST,
+    R042_HNDL_COST,
+    R044_IMP_DUTIES,
+    R061_DISTR_COST_VAR_AMOUNT,
+    R061_DISTR_COST_STD_AMOUNT,
+    R061_DISTR_COST,
+    R041_ST_PROD_COST_ST,
+    R031_ST_COG_COST_ST,
+    R061_DISTR_COST_ST,
+    R041_V_PROD_VARIANCE,
+    R031_V_COG_VARIANCE,
+    R061_V_DISTR_VARIANCE,
+    R043_MAN_VARIANCE,
+    RT04_TOTAL_COST,
+    RT04_ST_TOTAL_COST,
+    RT05_GROSS_MRG,
+    RT05_ST_GROSS_MRG,
+    RT06_ST_CONTR_MRG,
+    RT06_CONTR_MRG,
+    R071_MEDIA_EXP,
+    R073_TRAD_AP_KEY_AMOUNT,
+    R073_TRAD_AP_GRP_AMOUNT,
+    R073_TRADE_AP,
+    R072_OTH_CONS_AP,
+    RT07_TOTAL_AP,
+    BOI_ST_GLAA,
+    RT08_OTH_BOI_GLAA,
+    RT09_ST_CAAP,
+    RT09_CAAP,
+    R061FD_FIXED_DIST_COST,
+    R061_VAR_TRANS_DIST_COSTS,
+    R061_VAR_WAREHOUSE_DIST_COSTS,
+    FREE_GOODS_VL
+FROM [lib://DataFiles/F_BUDGET_SELLIN.qvd]
+(qvd);
+
+LOAD
+    DATEID,
+    DAYINWEEK,
+    DAYINMONTH,
+    DAYINYEAR,
+    WEEKINMONTH,
+    WEEKINYEAR,
+    MONTHINYEAR,
+    QUARTER,
+    "YEAR",
+    FISCALDAYINWEEK,
+    FISCALDAYINMONTH,
+    FISCALDAYINYEAR,
+    FISCALWEEKINMONTH,
+    FISCALWEEKINYEAR,
+    FISCALMONTH,
+    FISCALQUARTER,
+    FISCALYEAR
+FROM [lib://DataFiles/D_DATE.qvd]
+(qvd);
+
+LOAD
+    DATE_ID,
+    DAY_IN_WEEK,
+    DAY_IN_MONTH,
+    DAY_IN_YEAR,
+    WEEK_IN_YEAR,
+    MONTH_IN_YEAR,
+    MONTH_IN_YEAR_NAME,
+    MONTH_IN_YEAR_NAME_EN,
+    QUARTER_IN_YEAR,
+    "YEAR",
+    WORKDAY,
+    WORKDAY_IN_MONTH,
+    DAY_IN_WEEK_FISCAL,
+    DAY_IN_MONTH_FISCAL,
+    DAY_IN_YEAR_FISCAL,
+    WEEK_IN_YEAR_FISCAL,
+    MONTH_IN_YEAR_FISCAL,
+    MONTH_IN_YEAR_FISCAL_NAME,
+    MONTH_IN_YEAR_FISCAL_NAME_EN,
+    QUARTER_IN_YEAR_FISCAL,
+    YEAR_FISCAL,
+    HOLIDAY_DESC,
+    LAST_WORKDAY_IN_MONTH
+FROM [lib://DataFiles/D_DATE2.qvd]
+(qvd);
+
+LOAD
+    ADAN8,
+    WINE_EFD,
+    WINE_EXD,
+    WINE_STATUS,
+    SPIRITS_EFD,
+    SPIRITS_EXD,
+    SPIRITS_STATUS
+FROM [lib://DataFiles/D_AN8_KONCESJE.qvd]
+(qvd);
+
+LOAD
+    SOLDTOID,
+    ADDRESSNUMBER,
+    C_NAMEALPHA,
+    NAMEALPHA,
+    C_MAILINGNAME,
+    MAILINGNAME,
+    C_ADDRESSLINE1,
+    ADDRESSLINE1,
+    C_ADDRESSLINE2,
+    ADDRESSLINE2,
+    C_ADDRESSLINE3,
+    ADDRESSLINE3,
+    C_ADDRESSLINE4,
+    ADDRESSLINE4,
+    C_CITY,
+    CITY,
+    C_STATE,
+    STATE,
+    C_COUNTRY,
+    COUNTRY,
+    C_POSTALCODE,
+    POSTALCODE,
+    TAXID,
+    ABAC01,
+    C_CATEGORYCODE01,
+    CATEGORYCODE01,
+    ABAC02,
+    C_CATEGORYCODE02,
+    CATEGORYCODE02,
+    ABAC03,
+    C_CATEGORYCODE03,
+    CATEGORYCODE03,
+    ABAC04,
+    C_CATEGORYCODE04,
+    CATEGORYCODE04,
+    ABAC05,
+    C_CATEGORYCODE05,
+    CATEGORYCODE05,
+    ABAC06,
+    C_CATEGORYCODE06,
+    CATEGORYCODE06,
+    ABAC07,
+    C_CATEGORYCODE07,
+    CATEGORYCODE07,
+    ABAC08,
+    C_CATEGORYCODE08,
+    CATEGORYCODE08,
+    ABAC09,
+    C_CATEGORYCODE09,
+    CATEGORYCODE09,
+    ABAC10,
+    C_CATEGORYCODE10,
+    CATEGORYCODE10,
+    ABAC11,
+    C_CATEGORYCODE11,
+    CATEGORYCODE11,
+    ABAC12,
+    C_CATEGORYCODE12,
+    CATEGORYCODE12,
+    ABAC13,
+    C_CATEGORYCODE13,
+    CATEGORYCODE13,
+    ABAC14,
+    C_CATEGORYCODE14,
+    CATEGORYCODE14,
+    ABAC15,
+    C_CATEGORYCODE15,
+    CATEGORYCODE15,
+    ABAC16,
+    C_CATEGORYCODE16,
+    CATEGORYCODE16,
+    ABAC17,
+    C_CATEGORYCODE17,
+    CATEGORYCODE17,
+    ABAC18,
+    C_CATEGORYCODE18,
+    CATEGORYCODE18,
+    ABAC19,
+    C_CATEGORYCODE19,
+    CATEGORYCODE19,
+    ABAC20,
+    C_CATEGORYCODE20,
+    CATEGORYCODE20,
+    ABAC21,
+    C_CATEGORYCODE21,
+    CATEGORYCODE21,
+    ABAC22,
+    C_CATEGORYCODE22,
+    CATEGORYCODE22,
+    ABAC23,
+    C_CATEGORYCODE23,
+    CATEGORYCODE23,
+    ABAC24,
+    C_CATEGORYCODE24,
+    CATEGORYCODE24,
+    ABAC25,
+    C_CATEGORYCODE25,
+    CATEGORYCODE25,
+    ABAC26,
+    C_CATEGORYCODE26,
+    CATEGORYCODE26,
+    ABAC27,
+    C_CATEGORYCODE27,
+    CATEGORYCODE27,
+    ABAC28,
+    C_CATEGORYCODE28,
+    CATEGORYCODE28,
+    ABAC29,
+    C_CATEGORYCODE29,
+    CATEGORYCODE29,
+    ABAC30,
+    C_CATEGORYCODE30,
+    CATEGORYCODE30,
+    VALIDFROM,
+    VALIDTO,
+    ISCURRENT,
+    ISHISTORY,
+    MINO,
+    C_COUNTRY_DESC,
+    COUNTRY_DESC,
+    ABSIC,
+    S_TYPE,
+    CLASSIFICATIONCODE02,
+    ASN,
+    CLASSIFICATIONCODE04,
+    TRAR,
+    CUSTOMERGROUP,
+    CUSTOMERGROUPDESC,
+    PAYER,
+    ABATPR
+FROM [lib://DataFiles/D_SOLD_TO.qvd]
+(qvd);
+
+LOAD
+    ITEMID,
+    SHRTID,
+    LNGID,
+    ITEMDESCRIPTION,
+    ITEMDESCRIPTION2,
+    IMTMPL,
+    STD_CST,
+    EANCODE,
+    COUNTRY,
+    IMSRP0,
+    C_SALESREPORTINGCODE00,
+    SALESREPORTINGCODE00,
+    IMSRP1,
+    C_SALESREPORTINGCODE01,
+    SALESREPORTINGCODE01,
+    IMSRP2,
+    C_SALESREPORTINGCODE02,
+    SALESREPORTINGCODE02,
+    IMSRP3,
+    C_SALESREPORTINGCODE03,
+    SALESREPORTINGCODE03,
+    IMSRP4,
+    C_SALESREPORTINGCODE04,
+    SALESREPORTINGCODE04,
+    IMSRP5,
+    C_SALESREPORTINGCODE05,
+    SALESREPORTINGCODE05,
+    IMSRP6,
+    C_SALESREPORTINGCODE06,
+    SALESREPORTINGCODE06,
+    IMSRP7,
+    C_SALESREPORTINGCODE07,
+    SALESREPORTINGCODE07,
+    IMSRP8,
+    C_SALESREPORTINGCODE08,
+    SALESREPORTINGCODE08,
+    IMSRP9,
+    C_SALESREPORTINGCODE09,
+    SALESREPORTINGCODE09,
+    IMPRP0,
+    C_PURCHASREPORTINGCODE00,
+    PURCHASREPORTINGCODE00,
+    IMPRP1,
+    C_PURCHASREPORTINGCODE01,
+    PURCHASREPORTINGCODE01,
+    IMPRP2,
+    C_PURCHASREPORTINGCODE02,
+    PURCHASREPORTINGCODE02,
+    IMPRP3,
+    C_PURCHASREPORTINGCODE03,
+    PURCHASREPORTINGCODE03,
+    IMPRP4,
+    C_PURCHASREPORTINGCODE04,
+    PURCHASREPORTINGCODE04,
+    IMPRP5,
+    C_PURCHASREPORTINGCODE05,
+    PURCHASREPORTINGCODE05,
+    IMPRP6,
+    C_PURCHASREPORTINGCODE06,
+    PURCHASREPORTINGCODE06,
+    IMPRP7,
+    C_PURCHASREPORTINGCODE07,
+    PURCHASREPORTINGCODE07,
+    IMPRP8,
+    C_PURCHASREPORTINGCODE08,
+    PURCHASREPORTINGCODE08,
+    IMPRP9,
+    C_PURCHASREPORTINGCODE09,
+    PURCHASREPORTINGCODE09,
+    ITEMSEGMENT01,
+    ITEMSEGMENT02,
+    ITEMSEGMENT03,
+    ITEMSEGMENT04,
+    ITEMSEGMENT05,
+    ITEMSEGMENT06,
+    ITEMSEGMENT07,
+    STOCKINGTYPE,
+    IMUOM1,
+    IMUOM2,
+    IMUOM3,
+    IMUOM4,
+    IMUOM6,
+    IMUOM8,
+    IMUOM9,
+    IMUWUM,
+    IMUVM1,
+    VALIDFROM,
+    VALIDTO,
+    ISCURRENT,
+    ISHISTORY,
+    IMGLPT,
+    VOLUME,
+    KR_SZ,
+    PL_SZ,
+    SZ_LT,
+    C01_CODE,
+    C01_CODE_DESC,
+    C02_CODE,
+    C02_CODE_DESC,
+    C03_CODE,
+    C03_CODE_DESC,
+    C04_CODE,
+    C04_CODE_DESC,
+    C05_CODE,
+    C05_CODE_DESC,
+    C06_CODE,
+    C06_CODE_DESC,
+    C07_CODE,
+    C07_CODE_DESC,
+    C08_CODE,
+    C08_CODE_DESC,
+    C09_CODE,
+    C09_CODE_DESC,
+    C10_CODE,
+    C10_CODE_DESC,
+    CN,
+    CN_CODE,
+    SHIP_CODE,
+    SHIP_CODE_DESC1,
+    SHIP_CODE_DESC2,
+    SZ_GR,
+    WEIGHT_OF_KR,
+    COUNTRY_DESC,
+    SZ_GT,
+    PC_BRAND_QUALITY_CODE,
+    PC_BRAND_QUALITY_CODE_DESC,
+    PC_BRAND_CODE,
+    PC_BRAND_CODE_DESC,
+    PC_BRAND_QUALITY_SIZE_CODE,
+    PC_BRAND_QUALITY_SIZE_DESC,
+    ANAPLAN_SKU
+FROM [lib://DataFiles/D_ITEM.qvd]
+(qvd);
+
+LOAD
+    ITEM_ID,
+    SHRTID,
+    LNGITEMID,
+    SEGMENT1,
+    SEGMENT2,
+    SEGMENT3,
+    SEGMENT4,
+    SEGMENT5,
+    SEGMENT6,
+    SEGMENT7,
+    CATEGORY1,
+    CATEGORY2,
+    CATEGORY3,
+    CATEGORY4,
+    CATEGORY5,
+    CATEGORY6,
+    CATEGORY7,
+    CATEGORY8,
+    CATEGORY9,
+    CATEGORY10,
+    CATEGORY12,
+    CATEGORY13,
+    CATEGORY14,
+    CATEGORY15,
+    CATEGORY16,
+    CATEGORY17,
+    CATEGORY18,
+    CATEGORY19,
+    CATEGORY20,
+    CATEGORY21,
+    LOADDATE,
+    ISHISTORY,
+    ITEMDESCRIPTION,
+    ITEMDESCRIPTION2,
+    IMPRP3,
+    C_PURCHASREPORTINGCODE02,
+    ISCURRENT,
+    CATEGORY22
+FROM [lib://DataFiles/D_SALES_ITM.qvd]
+(qvd);
+
+
+
+LOAD
+    BUDGET_IDX,
+    BUDGET_LNG_IDX,
+    ACTUAL_IDX,
+    ACTUAL_LNG_IDX,
+    BUDGET_SK_IDX,
+    ACTUAL_SK_IDX
+FROM [lib://DataFiles/LKP_SL_BUDGET_IDX.qvd]
+(qvd);
+
+LOAD
+    A6AN8,
+    A6TRAP,
+    A6TRAP_DESC,
+    A6CRRP,
+    A6CRCA,
+    A6HDPY,
+    A6HDPY_DESC,
+    A6FRTH,
+    A6FRTH_DESC,
+    A6WUMD,
+    A6WUMD_DESC,
+    A6VUMD,
+    A6VUMD_DESC,
+    A6APC,
+    A6TXA2,
+    A6EXR2,
+    A6EXR2_DESC,
+    A6HOLD,
+    A6PYIN,
+    A6PYIN_DESC
+FROM [lib://DataFiles/D_AB_AP.qvd]
+(qvd);
+
+LOAD
+    SKU_EAN,
+    SKU_DESCRIPTION,
+    SKU_DESCRIPTION_CONT,
+    SKU_LONG_ITEMID,
+    SKU_BGT_DESCRIPTION,
+    SKU_BGT_DESCRIPTION_CONT,
+    SKU_BGT_LONG_ITEMID
+FROM [lib://DataFiles/PP_LISTA_SKU.qvd]
+(qvd);
+
+LOAD
+    MCMCU,
+    MCDL01
+FROM [lib://DataFiles/D_PL_V2_MCU.qvd]
+(qvd);
+
+LOAD
+    KodKraju,
+    "UE/NUE"
+FROM [lib://Google_Drive - alberto.lopez@sdggroup.com/1ZbGFANI67ME6zoQEHN7cOJ1KlxaeC0CN/Kraje_UE.qvd]
+(qvd);
+
